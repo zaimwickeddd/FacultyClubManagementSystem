@@ -4,185 +4,193 @@
     Author     : Muhamad Zulhairie
 --%>
 
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Faculty Club Management System</title>
-    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
+    <title>AJK Dashboard | UiTM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* Custom Styles */
-        .hero-section {
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
-                        url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1500&q=80');
-            background-size: cover;
-            background-position: center;
-            color: white;
-            padding: 120px 0;
+        :root {
+            --bg-pink: #fbc2eb; /* Soft pink background */
+            --card-purple: #e0b0ff; /* Light purple for list items */
+            --header-gray: #e0e0e0;
+            --accent-pink: #ff99f1;
         }
-        .stat-bar {
-            background-color: #f8f9fa;
-            border-bottom: 1px solid #dee2e6;
+
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-pink);
         }
+
+        /* Navbar Styling */
+        .navbar {
+            background-color: var(--header-gray);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 30px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .logo-section img { height: 60px; }
+
+        .nav-links { display: flex; gap: 20px; }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #fff;
+            padding: 8px 20px;
+            border-radius: 25px;
+            border: 2px solid #000;
+            text-decoration: none;
+            color: #000;
+            font-weight: 600;
+        }
+
+        .nav-item.active { background-color: var(--accent-pink); }
+
+        .user-profile { text-align: right; }
+        .logout-link { color: red; text-decoration: none; font-weight: bold; font-size: 12px; }
+
+        /* Main Dashboard Layout */
+        .dashboard-container {
+            display: flex;
+            justify-content: space-around;
+            padding: 50px 20px;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
         .card {
-            transition: transform 0.3s;
+            background: white;
+            border-radius: 20px;
+            width: 320px;
+            padding: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            text-align: center;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
         }
-        .card:hover {
-            transform: translateY(-5px);
+
+        .card-title { font-size: 1.5rem; margin-bottom: 20px; font-weight: 700; }
+
+        /* Club Card Specific */
+        .club-info-box {
+            background-color: var(--accent-pink);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
         }
-        footer {
-            background-color: #212529;
-            color: #ccc;
+        .club-logo { width: 80px; height: 80px; background: white; border-radius: 50%; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; }
+        .btn-view {
+            background: #b0b0b0;
+            border: 2px solid #000;
+            padding: 10px 40px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: auto;
+        }
+
+        /* List Items (Events & Status) */
+        .list-item {
+            background-color: var(--card-purple);
+            margin: 10px 0;
+            padding: 12px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            font-weight: 600;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .status-pill {
+            background: white;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
         }
     </style>
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="homepage.jsp">FACULTY CLUB</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link active" href="homepage.jsp">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Facilities</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Events</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Gallery</a></li>
-                    <li class="nav-item"><a class="btn btn-primary ms-lg-3" href="login.jsp">Login</a></li>
-                </ul>
-            </div>
+    <header class="navbar">
+        <div class="logo-section">
+            <img src="uitm_logo.png" alt="UiTM Logo">
         </div>
-    </nav>
+        
+        <nav class="nav-links">
+            <a href="home.jsp" class="nav-item active"><i class="fas fa-home"></i> Home</a>
+            <a href="events.jsp" class="nav-item"><i class="fas fa-calendar-alt"></i> Events</a>
+            <a href="clubs.jsp" class="nav-item"><i class="fas fa-star"></i> Clubs</a>
+        </nav>
 
-    <header class="hero-section text-center">
-        <div class="container">
-            <h1 class="display-3 fw-bold">Academic Excellence & Leisure</h1>
-            <p class="lead mb-4">The premier hub for university faculty members to connect, dine, and collaborate.</p>
-            <a href="#explore" class="btn btn-primary btn-lg px-5">Explore Club</a>
+        <div class="user-profile">
+            <div><i class="fas fa-user-circle fa-2x"></i></div>
+            <strong>AJK1</strong><br>
+            <a href="logout" class="logout-link">LOGOUT</a>
         </div>
     </header>
 
-    <div class="stat-bar py-4">
-        <div class="container">
-            <div class="row text-center">
-                <div class="col-md-4">
-                    <h3 class="fw-bold mb-0">850+</h3>
-                    <small class="text-muted text-uppercase">Active Members</small>
-                </div>
-                <div class="col-md-4 border-start border-end">
-                    <h3 class="fw-bold mb-0">12</h3>
-                    <small class="text-muted text-uppercase">Premium Venues</small>
-                </div>
-                <div class="col-md-4">
-                    <h3 class="fw-bold mb-0">24/7</h3>
-                    <small class="text-muted text-uppercase">Member Support</small>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <section id="explore" class="container my-5 py-5">
-        <div class="text-center mb-5">
-            <h2 class="fw-bold">Club Services</h2>
-            <div class="mx-auto bg-primary" style="height: 3px; width: 60px;"></div>
-        </div>
+    <main class="dashboard-container">
         
-        <div class="row g-4">
-            <div class="col-md-4">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body p-4 text-center">
-                        <div class="fs-1 text-primary mb-3">📅</div>
-                        <h4 class="card-title">Facility Booking</h4>
-                        <p class="card-text text-muted">Reserve VIP lounges, conference halls, or dining tables for your events.</p>
-                        <a href="#" class="btn btn-outline-primary stretched-link">Book Now</a>
-                    </div>
+        <section class="card">
+            <h2 class="card-title">My Club Card</h2>
+            <div class="club-info-box">
+                <div class="club-logo">
+                    <img src="compass_logo.png" alt="Logo" style="width: 80%;">
                 </div>
+                <h3>COMPASS</h3>
+                <p>Computer Science Association</p>
+                <br>
+                <strong>PRESIDENT</strong>
             </div>
-            <div class="col-md-4">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body p-4 text-center">
-                        <div class="fs-1 text-success mb-3">💳</div>
-                        <h4 class="card-title">Membership</h4>
-                        <p class="card-text text-muted">Manage your profile, check your subscription status, and pay dues online.</p>
-                        <a href="#" class="btn btn-outline-success stretched-link">Manage Account</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body p-4 text-center">
-                        <div class="fs-1 text-warning mb-3">🔔</div>
-                        <h4 class="card-title">Notices</h4>
-                        <p class="card-text text-muted">Stay updated with the latest faculty news, meeting minutes, and alerts.</p>
-                        <a href="#" class="btn btn-outline-warning stretched-link">View Notices</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+            <button class="btn-view">View</button>
+        </section>
 
-    <section class="bg-light py-5">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8">
-                    <h3 class="fw-bold mb-4">Latest Announcements</h3>
-                    <div class="bg-white p-4 rounded shadow-sm mb-3">
-                        <span class="badge bg-primary mb-2">General</span>
-                        <h5>New Faculty Lounge Wing Opening</h5>
-                        <p class="text-muted mb-2">We are excited to announce that the West Wing expansion is now complete, offering 20 new quiet workspaces...</p>
-                        <small class="text-secondary">Jan 11, 2026</small>
-                    </div>
-                    <div class="bg-white p-4 rounded shadow-sm">
-                        <span class="badge bg-success mb-2">Menu</span>
-                        <h5>Organic Sunday Brunch Starts This Weekend</h5>
-                        <p class="text-muted mb-2">Join us every Sunday for a farm-to-table dining experience exclusively for faculty members and guests...</p>
-                        <small class="text-secondary">Jan 09, 2026</small>
-                    </div>
-                </div>
-                
-                <div class="col-lg-4">
-                    <h3 class="fw-bold mb-4">Upcoming Events</h3>
-                    <div class="list-group shadow-sm">
-                        <div class="list-group-item p-3">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h6 class="mb-1 fw-bold text-primary">Faculty Gala 2026</h6>
-                            </div>
-                            <p class="mb-1 small">Grand Ballroom | 7:00 PM</p>
-                        </div>
-                        <div class="list-group-item p-3">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h6 class="mb-1 fw-bold text-primary">IT Workshop</h6>
-                            </div>
-                            <p class="mb-1 small">Seminar Room B | 10:00 AM</p>
-                        </div>
-                        <div class="list-group-item p-3">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h6 class="mb-1 fw-bold text-primary">Monthly Board Meeting</h6>
-                            </div>
-                            <p class="mb-1 small">Conference Room 1 | 2:00 PM</p>
-                        </div>
-                    </div>
-                </div>
+        <section class="card">
+            <h2 class="card-title">Upcoming Events</h2>
+            <div class="list-item">
+                <span>HACKATHON INTERNATIONAL</span>
+                <span>01/12</span>
             </div>
-        </div>
-    </section>
+            <div class="list-item">
+                <span>COMPASS FAMILY DAY</span>
+                <span>02/12 - 07/12</span>
+            </div>
+            <div class="list-item">
+                <span>FEST-BAF 2025</span>
+                <span>08/12</span>
+            </div>
+        </section>
 
-    <footer class="py-5">
-        <div class="container text-center">
-            <p class="mb-2 fw-bold text-white">Faculty Club Management System</p>
-            <p class="small mb-0">University Campus, Building 4A, Third Floor</p>
-            <p class="small">Contact: (555) 123-4567 | support@facultyclub.edu</p>
-            <hr class="my-4 border-secondary">
-            <p class="small">&copy; 2026 All Rights Reserved.</p>
-        </div>
-    </footer>
+        <section class="card">
+            <h2 class="card-title">Event Approval Status</h2>
+            <div class="list-item">
+                <span>TEAM BUILDING</span>
+                <span class="status-pill">APPROVED</span>
+            </div>
+            <div class="list-item">
+                <span>CPROM</span>
+                <span class="status-pill">REJECTED</span>
+            </div>
+            <div class="list-item">
+                <span>COMPASS ANUAL GATHERING</span>
+                <span class="status-pill">APPROVED</span>
+            </div>
+        </section>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </main>
+
 </body>
 </html>
