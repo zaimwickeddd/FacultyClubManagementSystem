@@ -130,8 +130,8 @@
         </div>
         
         <nav class="nav-links">
-            <a href="home.jsp" class="nav-item active"><i class="fas fa-home"></i> Home</a>
-            <a href="events.jsp" class="nav-item"><i class="fas fa-calendar-alt"></i> Events</a>
+            <a href="homepage.jsp" class="nav-item active"><i class="fas fa-home"></i> Home</a>
+            <a href="eventList.jsp" class="nav-item"><i class="fas fa-calendar-alt"></i> Events</a>
             <a href="clubs.jsp" class="nav-item"><i class="fas fa-star"></i> Clubs</a>
         </nav>
 
