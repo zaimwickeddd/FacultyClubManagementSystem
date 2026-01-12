@@ -138,7 +138,7 @@
         <div class="user-profile">
             <div><i class="fas fa-user-circle fa-2x"></i></div>
             <strong>AJK1</strong><br>
-            <a href="logout" class="logout-link">LOGOUT</a>
+            <a href="Logout.jsp" class="logout-link">LOGOUT</a>
         </div>
     </header>
 
