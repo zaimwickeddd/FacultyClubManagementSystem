@@ -64,10 +64,16 @@
     </style>
 </head>
 <body>
+    
+    <%
+        // Clean session retrieval to prevent NullPointerExceptions
+        String userName = (session.getAttribute("userName") != null) ? (String)session.getAttribute("userName") : "";
+        String userRole = (session.getAttribute("userRole") != null) ? (String)session.getAttribute("userRole") : " ";
+    %>
 
     <header class="navbar">
         <div class="logo-section">
-            <img src="uitm_logo.png" alt="UiTM Logo">
+            <img src="${pageContext.request.contextPath}/image/UiTM-Logo-removebg-preview.png" alt="UiTM Logo">
         </div>
         
         <nav class="nav-links">
@@ -78,8 +84,9 @@
 
         <div class="user-profile">
             <div><i class="fas fa-user-circle fa-2x"></i></div>
-            <strong>AJK1</strong><br>
-            <a href="Logout.jsp" class="logout-link">LOGOUT</a>
+            <strong><%= userName %></strong><br>
+            <small>(<%= userRole %>)</small><br>
+            <a href="logout.jsp" class="logout-link">LOGOUT</a>
         </div>
     </header>
 
