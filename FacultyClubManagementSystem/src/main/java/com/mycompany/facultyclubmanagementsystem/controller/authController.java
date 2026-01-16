@@ -20,7 +20,7 @@ public class authController extends HttpServlet {
             }
 
             if ("register".equals(action)) {
-                String sql = "INSERT INTO users (UserName, UserPassword, UserEmail, UserPhone, ClubID, FacultyID, UserRole) VALUES (?, ?, ?, ?, ?, ?, 'Normal')";
+                String sql = "INSERT INTO user (UserName, UserPassword, UserEmail, UserPhone, ClubID, FacultyID, UserRole) VALUES (?, ?, ?, ?, ?, ?, 'Normal')";
                 PreparedStatement ps = conn.prepareStatement(sql);
                 ps.setString(1, request.getParameter("username"));
                 ps.setString(2, request.getParameter("password"));
@@ -34,7 +34,7 @@ public class authController extends HttpServlet {
                 response.sendRedirect("login.jsp");
 
             } else if ("login".equals(action)) {
-                String sql = "SELECT * FROM users WHERE UserName = ? AND UserPassword = ?";
+                String sql = "SELECT * FROM user WHERE UserName = ? AND UserPassword = ?";
                 PreparedStatement ps = conn.prepareStatement(sql);
                 ps.setString(1, request.getParameter("username"));
                 ps.setString(2, request.getParameter("password"));
