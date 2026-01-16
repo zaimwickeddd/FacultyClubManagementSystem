@@ -142,12 +142,12 @@
         <nav class="nav-links">
             <a href="homepage.jsp" class="nav-item active"><i class="fas fa-home"></i> Home</a>
             <a href="eventList.jsp" class="nav-item"><i class="fas fa-calendar-alt"></i> Events</a>
-            <a href="clubs.jsp" class="nav-item"><i class="fas fa-star"></i> Clubs</a>
             
             <%-- Only show User Management for Member --%>
             <% if ("Member".equals(userRole)) { %>
                 <a href="addAdmin.jsp" class="nav-item"><i class="fas fa-user-plus"></i> Add User</a>
             <% } %>
+            <a href="clubPage.jsp" class="nav-item"><i class="fas fa-star"></i> Clubs</a>
         </nav>
 
         <div class="user-profile">
