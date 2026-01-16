@@ -130,8 +130,8 @@
 
     <%
         // Clean session retrieval to prevent NullPointerExceptions
-        String userName = (session.getAttribute("userName") != null) ? (String)session.getAttribute("userName") : "Guest";
-        String userRole = (session.getAttribute("userRole") != null) ? (String)session.getAttribute("userRole") : "Normal";
+        String userName = (session.getAttribute("userName") != null) ? (String)session.getAttribute("userName") : "";
+        String userRole = (session.getAttribute("userRole") != null) ? (String)session.getAttribute("userRole") : " ";
     %>
 
     <header class="navbar">

@@ -90,7 +90,7 @@
     <div class="logout-container">
         
         <div class="text-center">
-            <img src="images/uitm_logo.png" alt="UiTM Logo" class="logo-img">
+            <img src="image/UiTM-Logo-removebg-preview.png" alt="UiTM Logo" class="logo-img">
         </div>
         
         <div class="system-title">

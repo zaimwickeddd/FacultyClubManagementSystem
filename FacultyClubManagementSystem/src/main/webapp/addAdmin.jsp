@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
-    String role = (String) session.getAttribute("userRole");
-    if (role == null || !"Admin".equals(role)) {
+    String currentRole = (String) session.getAttribute("userRole");
+    if (!"Member".equals(currentRole)) {
         response.sendRedirect("homepage.jsp?error=unauthorized");
         return;
     }

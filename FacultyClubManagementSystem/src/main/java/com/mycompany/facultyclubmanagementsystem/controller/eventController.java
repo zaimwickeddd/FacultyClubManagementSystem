@@ -80,7 +80,7 @@ public class eventController extends HttpServlet {
             int row = statement.executeUpdate();
             if (row > 0) {
                 // Success! Redirect back to dashboard
-                response.sendRedirect("dashboard.jsp?success=1");
+                response.sendRedirect("homepage.jsp?success=1");
             }
         } catch (Exception e) {
             e.printStackTrace();
