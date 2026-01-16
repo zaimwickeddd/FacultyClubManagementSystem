@@ -14,7 +14,7 @@
     <nav class="nav-links" style="display: flex; gap: 20px;">
         <a href="homepage.jsp" class="nav-item"><i class="fas fa-home"></i> Home</a>
         <a href="eventList.jsp" class="nav-item"><i class="fas fa-calendar-alt"></i> Events</a>
-        <a href="clubs.jsp" class="nav-item"><i class="fas fa-star"></i> Clubs</a>
+        <a href="clubPage.jsp" class="nav-item"><i class="fas fa-star"></i> Clubs</a>
 
         <%-- Role-based logic for Member --%>
         <% if ("Member".equals(session.getAttribute("userRole"))) { %>
