@@ -35,7 +35,7 @@ public class clubServlet extends HttpServlet {
             if (rs.next()) {
                 club = new Club();
                 club.setClubName(rs.getString("clubName"));
-                club.setDescription(rs.getString("ClubDescription"));
+                club.setClubDescription(rs.getString("ClubDescription"));
                 club.setFacultyName(rs.getString("facultyName"));
             }
 
