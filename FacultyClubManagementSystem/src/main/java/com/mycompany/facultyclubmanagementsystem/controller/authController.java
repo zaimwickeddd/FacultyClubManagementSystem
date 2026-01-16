@@ -7,10 +7,12 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 
+
 @WebServlet("/authController")
 public class authController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
+        
         
         try (Connection conn = DBConnection.getConnection()) {
             if (conn == null) {

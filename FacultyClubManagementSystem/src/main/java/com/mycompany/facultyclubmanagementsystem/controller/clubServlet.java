@@ -5,7 +5,7 @@
 package com.mycompany.facultyclubmanagementsystem.controller;
 
 import com.mycompany.facultyclubmanagementsystem.util.DBConnection;
-import com.mycompany.facultyclubmanagementsystem.util.Club;
+import com.mycompany.facultyclubmanagementsystem.model.Club;
 import java.io.IOException;
 import java.sql.*;
 import jakarta.servlet.ServletException;
