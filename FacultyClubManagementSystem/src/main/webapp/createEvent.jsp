@@ -27,7 +27,6 @@
             background-color: var(--bg-pink);
         }
 
-        /* Reusing Navbar Styling from Dashboard */
         .navbar {
             background-color: var(--header-gray);
             display: flex;
@@ -45,7 +44,6 @@
         }
         .nav-item.active { background-color: var(--accent-pink); }
 
-        /* Create Event Form Container */
         .main-container {
             display: flex;
             justify-content: center;
@@ -68,7 +66,6 @@
         .left-column { display: flex; flex-direction: column; gap: 15px; }
         .right-column { display: flex; flex-direction: column; gap: 20px; }
 
-        /* Form Inputs */
         .input-group { display: flex; align-items: center; gap: 10px; font-weight: 700; }
         .input-line {
             border: none;
@@ -77,6 +74,7 @@
             font-family: inherit;
             font-size: 1rem;
             outline: none;
+            background: transparent;
         }
 
         .image-upload-box {
@@ -104,9 +102,6 @@
             font-family: inherit;
         }
 
-        .details-section { font-size: 0.9rem; line-height: 1.8; }
-        .details-section strong { font-size: 1rem; }
-
         .submit-btn {
             background: var(--accent-pink);
             border: 2px solid #000;
@@ -126,21 +121,34 @@
 </head>
 <body>
 
+    <%
+        // Security Check: Only 'Staff' (Members) should typically propose events
+        String userRole = (String) session.getAttribute("userRole");
+        String userName = (String) session.getAttribute("userName");
+        if (userRole == null || (!userRole.equals("Staff") && !userRole.equals("Admin"))) {
+            response.sendRedirect("homepage.jsp?error=unauthorized");
+            return;
+        }
+    %>
+
     <header class="navbar">
-        <div class="logo-section"><img src="uitm_logo.png" alt="UiTM Logo"></div>
+        <div class="logo-section">
+            <img src="${pageContext.request.contextPath}/image/UiTM-Logo-removebg-preview.png" alt="UiTM Logo">
+        </div>
         <nav class="nav-links">
-            <a href="dashboard.jsp" class="nav-item"><i class="fas fa-home"></i> Home</a>
+            <a href="homepage.jsp" class="nav-item"><i class="fas fa-home"></i> Home</a>
             <a href="createEvent.jsp" class="nav-item active"><i class="fas fa-calendar-plus"></i> Events</a>
             <a href="clubs.jsp" class="nav-item"><i class="fas fa-star"></i> Clubs</a>
         </nav>
         <div class="user-profile">
-            <strong>AJK1</strong><br>
-            <a href="logout" style="color:red; font-size:12px; font-weight:bold; text-decoration:none;">LOGOUT</a>
+            <strong><%= userName %></strong><br>
+            <a href="Logout.jsp" style="color:red; font-size:12px; font-weight:bold; text-decoration:none;">LOGOUT</a>
         </div>
     </header>
 
     <div class="main-container">
-        <form action="EventController" method="POST" enctype="multipart/form-data" class="form-card">
+        <%-- Note: Using SubmitEventServlet to handle the DB logic we discussed --%>
+        <form action="SubmitEventServlet" method="POST" enctype="multipart/form-data" class="form-card">
             
             <div class="left-column">
                 <div class="input-group">
@@ -154,12 +162,11 @@
                     <input type="file" id="fileInput" name="eventImage" style="display:none;">
                 </div>
 
-                <div class="details-section">
-                    <p><strong>Requested by:</strong> <span style="color: #007bff;">Zaim ( Compass Club President) YOU</span></p>
+                <div class="details-section" style="font-size: 0.9rem; line-height: 1.8;">
+                    <p><strong>Requested by:</strong> <span style="color: #007bff;"><%= userName %> (YOU)</span></p>
                     
                     <div class="input-group">
-                        Date: <input type="date" name="startDate" class="input-line" style="width:150px;"> 
-                        to <input type="date" name="endDate" class="input-line" style="width:150px;">
+                        Date: <input type="date" name="eventDate" class="input-line" style="width:150px;" required>
                     </div>
 
                     <div class="input-group" style="margin-top:10px;">
@@ -168,22 +175,28 @@
                     </div>
 
                     <div class="input-group" style="margin-top:10px;">
-                        Venue: <input type="text" name="venue" class="input-line">
+                        Venue: <input type="text" name="venue" class="input-line" required>
                     </div>
 
                     <p style="margin-top:10px;">
-                        <strong>Category:</strong> International / National / Regional / Open / Closed / Faculty
-                        <input type="text" name="category" class="input-line" placeholder="Type category here...">
+                        <strong>Category:</strong>
+                        <select name="category" class="input-line">
+                            <option value="Faculty">Faculty</option>
+                            <option value="Open">Open</option>
+                            <option value="Regional">Regional</option>
+                            <option value="National">National</option>
+                            <option value="International">International</option>
+                        </select>
                     </p>
 
                     <div class="input-group">
-                        Budget: RM <input type="number" step="0.01" name="budget" class="input-line" style="width:100px;">
+                        Estimated Budget: RM <input type="number" step="0.01" name="budget" class="input-line" style="width:100px;">
                     </div>
                 </div>
             </div>
 
             <div class="right-column">
-                <textarea name="description" class="description-box" placeholder="FILL IN THE PROPOSED EVENT DESCRIPTION&#10;MAX 200 WORDS"></textarea>
+                <textarea name="description" class="description-box" placeholder="FILL IN THE PROPOSED EVENT DESCRIPTION&#10;MAX 200 WORDS" required></textarea>
                 
                 <button type="submit" class="submit-btn">
                     CONFIRM<br>PROPOSED<br>EVENT
@@ -193,5 +206,11 @@
         </form>
     </div>
 
+    <script>
+        // Simple script to show filename when selected
+        document.getElementById('fileInput').onchange = function() {
+            if(this.files[0]) alert("File selected: " + this.files[0].name);
+        };
+    </script>
 </body>
 </html>
