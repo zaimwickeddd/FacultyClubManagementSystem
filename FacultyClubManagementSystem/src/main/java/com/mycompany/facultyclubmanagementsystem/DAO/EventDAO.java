@@ -86,7 +86,7 @@ public class EventDAO {
      */
     public List<Event> findUpcomingEvents() {
         List<Event> events = new ArrayList<>();
-        // Using the exact table name 'events' from your screenshot
+        // Using the exact table name 'event' from your screenshot
         String sql = "SELECT EventName, EventDate FROM event WHERE EventDate >= CURDATE() " +
                      "AND EventStatus = 'Upcoming' ORDER BY EventDate ASC LIMIT 3";
 

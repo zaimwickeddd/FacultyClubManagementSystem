@@ -4,6 +4,8 @@
  */
 package com.mycompany.facultyclubmanagementsystem.controller;
 
+import com.mycompany.facultyclubmanagementsystem.dao.EventDAO;
+import com.mycompany.facultyclubmanagementsystem.model.Event;
 import com.mycompany.facultyclubmanagementsystem.util.DBConnection;
 import java.io.IOException;
 import java.sql.*;

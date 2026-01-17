@@ -68,10 +68,10 @@ public class authController extends HttpServlet {
             session.setAttribute("userClubID", user.getClubId());
             session.setAttribute("userFacultyID", user.getFacultyId());
             
-            // 4. Fetch data for Dashboard visibility
             EventDAO eventDAO = new EventDAO();
             List<Event> upcoming = eventDAO.findUpcomingEvents();
-            session.setAttribute("upcomingEvents", upcoming); 
+
+            session.setAttribute("upcomingEvents", upcoming);
             
             // 5. Successful Redirect
             response.sendRedirect("homepage.jsp");
