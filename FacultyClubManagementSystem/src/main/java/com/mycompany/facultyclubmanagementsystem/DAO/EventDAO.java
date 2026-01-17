@@ -84,15 +84,20 @@ public class EventDAO {
      */
     public List<Event> findUpcomingEvents() {
         List<Event> events = new ArrayList<>();
-        String sql = "SELECT * FROM event WHERE EventDate >= CURDATE() AND EventStatus = 'Upcoming' " +
-                     "ORDER BY EventDate ASC, EventTime ASC";
-        
+        // Using the exact table name 'events' from your screenshot
+        String sql = "SELECT EventName, EventDate FROM events WHERE EventDate >= CURDATE() " +
+                     "AND EventStatus = 'Upcoming' ORDER BY EventDate ASC LIMIT 3";
+
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
-            
+
             while (rs.next()) {
-                events.add(mapResultSetToEvent(rs));
+                Event event = new Event();
+                // Matching your database attribute names exactly
+                event.setEventName(rs.getString("EventName"));
+                event.setEventDate(rs.getDate("EventDate"));
+                events.add(event);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -253,6 +258,8 @@ public class EventDAO {
         }
         return 0;
     }
+    
+    
     
     /**
      * Helper method to map ResultSet to Event object

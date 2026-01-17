@@ -6,6 +6,9 @@ import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
+import com.mycompany.facultyclubmanagementsystem.dao.EventDAO;
+import com.mycompany.facultyclubmanagementsystem.model.Event;
+import java.util.List;
 
 /**
  * Authentication Controller - Refactored to use DAO pattern
@@ -106,7 +109,7 @@ public class authController extends HttpServlet {
      * Handle user login
      */
     private void handleLogin(HttpServletRequest request, HttpServletResponse response) 
-            throws IOException {
+            throws IOException, ServletException{
         
         String username = request.getParameter("username");
         String password = request.getParameter("password");
@@ -131,8 +134,13 @@ public class authController extends HttpServlet {
             session.setAttribute("userClubID", user.getClubId());
             session.setAttribute("userFacultyID", user.getFacultyId());
             
+            EventDAO eventDAO = new EventDAO();
+            List<Event> upcoming = eventDAO.findUpcomingEvents();
+            request.setAttribute("upcomingEvents", upcoming);
+            
+            
             // Redirect to homepage
-            response.sendRedirect("homepage.jsp");
+            request.getRequestDispatcher("homepage.jsp").forward(request,response);
         } else {
             // Login failed
             response.sendRedirect("login.jsp?error=invalid");
