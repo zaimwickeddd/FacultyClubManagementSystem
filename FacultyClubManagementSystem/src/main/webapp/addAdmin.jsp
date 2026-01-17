@@ -1,3 +1,4 @@
+<%@ include file="header.jsp" %>
 <%
     String currentRole = (String) session.getAttribute("userRole");
     if (!"Member".equals(currentRole)) {
@@ -30,3 +31,4 @@
     </div>
 </body>
 </html>
+<%@ include file="footer.jsp" %>
