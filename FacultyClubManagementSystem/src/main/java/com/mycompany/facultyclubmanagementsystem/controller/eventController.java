@@ -6,7 +6,6 @@ package com.mycompany.facultyclubmanagementsystem.controller;
 
 import com.mycompany.facultyclubmanagementsystem.util.DBConnection;
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import jakarta.servlet.ServletException;
@@ -14,7 +13,6 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.Part;
 
 /**
  *
@@ -35,47 +33,27 @@ public class eventController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        // 1. Collect text data from the form
+        // Collect form data
         String title = request.getParameter("eventTitle");
         String startDate = request.getParameter("startDate");
-        String endDate = request.getParameter("endDate");
         String startTime = request.getParameter("startTime");
-        String endTime = request.getParameter("endTime");
         String venue = request.getParameter("venue");
-        String category = request.getParameter("category");
-        String budgetStr = request.getParameter("budget");
-        String description = request.getParameter("description");
-        
-        // 2. Handle the Image File
-        Part filePart = request.getPart("eventImage");
-        InputStream inputStream = null;
-        if (filePart != null) {
-            inputStream = filePart.getInputStream();
-        }
 
         Connection conn = null;
         try {
             conn = DBConnection.getConnection();
-            String sql = "INSERT INTO events (title, event_image, requested_by, start_date, end_date, "
-                       + "start_time, end_time, venue, category, budget, description) "
-                       + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            // Fixed: Using correct table name 'event' and matching database schema columns
+            String sql = "INSERT INTO event (EventName, EventDate, EventTime, EventVenue, " +
+                        "EventStatus, EventAttendance) " +
+                        "VALUES (?, ?, ?, ?, 'Upcoming', 0)";
             
             PreparedStatement statement = conn.prepareStatement(sql);
-            statement.setString(1, title);
-            
-            if (inputStream != null) {
-                statement.setBlob(2, inputStream);
-            }
-            
-            statement.setString(3, "Zaim (Compass Club President)"); // Placeholder for logged-in user
-            statement.setString(4, startDate);
-            statement.setString(5, endDate);
-            statement.setString(6, startTime);
-            statement.setString(7, endTime);
-            statement.setString(8, venue);
-            statement.setString(9, category);
-            statement.setDouble(10, Double.parseDouble(budgetStr));
-            statement.setString(11, description);
+            statement.setString(1, title);  // EventName
+            statement.setString(2, startDate);  // EventDate
+            statement.setString(3, startTime);  // EventTime
+            statement.setString(4, venue);  // EventVenue
+            // EventStatus = 'Upcoming' and EventAttendance = 0 are set in SQL
+
 
             int row = statement.executeUpdate();
             if (row > 0) {

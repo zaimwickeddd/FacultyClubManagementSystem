@@ -12,6 +12,10 @@
     <title>Create Event | Faculty Club</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <% 
+   // This will print the actual value saved in your session to the console
+   System.out.println("Session Role: " + session.getAttribute("userRole")); 
+    %>
     <style>
         :root {
             --bg-pink: #fbc2eb;
@@ -122,14 +126,15 @@
 <body>
 
     <%
-        // Security Check: Only 'Staff' (Members) should typically propose events
+        // Security Check: Only 'Member' (Members) should typically propose events
         String userRole = (String) session.getAttribute("userRole");
         String userName = (String) session.getAttribute("userName");
-        if (userRole == null || (!userRole.equals("Staff") && !userRole.equals("Admin"))) {
+        if (userRole == null || !userRole.equals("Member")) {
             response.sendRedirect("homepage.jsp?error=unauthorized");
             return;
         }
     %>
+    
 
     <header class="navbar">
         <div class="logo-section">
@@ -142,6 +147,7 @@
         </nav>
         <div class="user-profile">
             <strong><%= userName %></strong><br>
+            <small>(<%= userRole %>)</small><br>
             <a href="Logout.jsp" style="color:red; font-size:12px; font-weight:bold; text-decoration:none;">LOGOUT</a>
         </div>
     </header>

@@ -1,10 +1,12 @@
 <%-- 
     Document   : homepage
-    Created on : 11 Jan 2026, 1:33:40 am
+    Created on : 11 Jan 2026, 1:33:40?am
     Author     : Muhamad Zulhairie
 --%>
 
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ include file="header.jsp" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -105,18 +107,41 @@
         .btn-action { background-color: var(--accent-pink); }
 
         /* List Items */
+        /* Container for the event row */
         .list-item {
-            background-color: var(--card-purple);
-            margin: 10px 0;
-            padding: 12px;
-            border-radius: 5px;
+            background-color: #D1B3FF; /* Your requested purple */
+            border-radius: 8px;
+            padding: 10px 15px;
+            margin-bottom: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 0.9rem;
-            font-weight: 600;
+            height: 45px; /* Keeps all boxes identical height */
+            cursor: help; /* Changes cursor to indicate more info is available */
+            transition: background-color 0.3s ease;
         }
 
+        .list-item:hover {
+            background-color: var(--card-purple); /* Darkens slightly on hover for feedback */
+        }
+
+        /* The Event Name styling */
+        .event-name {
+            white-space: nowrap;      /* Keeps text on one line */
+            overflow: hidden;         /* Hides the 'International' part if too long */
+            text-overflow: ellipsis;  /* Adds the '...' */
+            flex: 1;                  /* Takes up available space */
+            margin-right: 15px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        /* The Date styling */
+        .event-date {
+            white-space: nowrap;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
         .status-pill {
             background: white;
             padding: 4px 10px;
@@ -134,29 +159,7 @@
         String userRole = (session.getAttribute("userRole") != null) ? (String)session.getAttribute("userRole") : " ";
     %>
 
-    <header class="navbar">
-        <div class="logo-section">
-            <img src="${pageContext.request.contextPath}/image/UiTM-Logo-removebg-preview.png" alt="UiTM Logo">
-        </div>
-        
-        <nav class="nav-links">
-            <a href="homepage.jsp" class="nav-item active"><i class="fas fa-home"></i> Home</a>
-            <a href="eventList.jsp" class="nav-item"><i class="fas fa-calendar-alt"></i> Events</a>
-            
-            <%-- Only show User Management for Member --%>
-            <% if ("Member".equals(userRole)) { %>
-                <a href="addAdmin.jsp" class="nav-item"><i class="fas fa-user-plus"></i> Add User</a>
-            <% } %>
-            <a href="clubPage.jsp" class="nav-item"><i class="fas fa-star"></i> Clubs</a>
-        </nav>
-
-        <div class="user-profile">
-            <div><i class="fas fa-user-circle fa-2x"></i></div>
-            <strong><%= userName %></strong><br>
-            <small>(<%= userRole %>)</small><br>
-            <a href="Logout.jsp" class="logout-link">LOGOUT</a>
-        </div>
-    </header>
+    
 
     <main class="dashboard-container">
         
@@ -190,22 +193,16 @@
         </section>
 
         <%-- SECTION 2: UPCOMING EVENTS (Shared) --%>
-        <section class="card">
+        <div class="card">
             <h2 class="card-title">Upcoming Events</h2>
-            <div class="list-item">
-                <span>HACKATHON INTERNATIONAL</span>
-                <span>01/12</span>
-            </div>
-            <div class="list-item">
-                <span>COMPASS FAMILY DAY</span>
-                <span>02/12</span>
-            </div>
-            <div class="list-item">
-                <span>FEST-BAF 2025</span>
-                <span>08/12</span>
-            </div>
+            <c:forEach var="event" items="${upcomingEvents}">
+                <div class="list-item">
+                    <span class="event-name" title="${event.eventName}">${event.eventName}</span>
+                    <span class="event-date">${event.eventDate}</span>
+                </div>
+            </c:forEach>
             <a href="eventList.jsp" class="btn-view" style="margin-top:auto;">ALL EVENTS</a>
-        </section>
+        </div>
 
         <%-- SECTION 3: STATUS (Shared/Contextual) --%>
         <section class="card">
@@ -235,3 +232,4 @@
 
 </body>
 </html>
+<%@ include file="footer.jsp" %>
