@@ -16,7 +16,7 @@ public class User {
     private String userEmail;
     private String userPhone;
     private Integer userSemester;
-    private String userRole; // Student, Member, Advisor, Admin
+    private String userRole; // Student, Member, Advisor
     private Integer facultyId;
     private Integer clubId;
     private Timestamp createdAt;

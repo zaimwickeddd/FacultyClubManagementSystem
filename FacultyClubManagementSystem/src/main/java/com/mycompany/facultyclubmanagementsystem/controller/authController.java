@@ -2,19 +2,18 @@ package com.mycompany.facultyclubmanagementsystem.controller;
 
 import com.mycompany.facultyclubmanagementsystem.dao.UserDAO;
 import com.mycompany.facultyclubmanagementsystem.model.User;
+import com.mycompany.facultyclubmanagementsystem.dao.EventDAO;
+import com.mycompany.facultyclubmanagementsystem.model.Event;
 import java.io.IOException;
+import java.util.List;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
-import com.mycompany.facultyclubmanagementsystem.dao.EventDAO;
-import com.mycompany.facultyclubmanagementsystem.model.Event;
-import java.util.List;
 
 /**
- * Authentication Controller - Refactored to use DAO pattern
- * Handles user login and registration
- * 
- * @author Anderson Giggs
+ * Authentication Controller
+ * Handles user login and registration using the DAO pattern.
+ * Corrected to match 'user' table and 'UserPassword' columns.
  */
 @WebServlet("/authController")
 public class authController extends HttpServlet {
@@ -42,12 +41,52 @@ public class authController extends HttpServlet {
     }
     
     /**
-     * Handle user registration
+     * Handle user login logic
+     */
+    private void handleLogin(HttpServletRequest request, HttpServletResponse response) 
+            throws IOException, ServletException {
+        
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
+        
+        // 1. Basic Validation
+        if (username == null || username.trim().isEmpty() ||
+            password == null || password.trim().isEmpty()) {
+            response.sendRedirect("login.jsp?error=missing_credentials");
+            return;
+        }
+        
+        // 2. Find user via DAO (Matches 'UserPassword' in DB)
+        User user = userDAO.findByCredentials(username, password);
+        
+        if (user != null) {
+            // 3. Setup Session
+            HttpSession session = request.getSession();
+            session.setAttribute("userId", user.getUserId());
+            session.setAttribute("username", user.getUserName());
+            session.setAttribute("userRole", user.getUserRole()); // 'Student', 'Member', or 'Advisor'
+            session.setAttribute("userClubID", user.getClubId());
+            session.setAttribute("userFacultyID", user.getFacultyId());
+            
+            // 4. Fetch data for Dashboard visibility
+            EventDAO eventDAO = new EventDAO();
+            List<Event> upcoming = eventDAO.findUpcomingEvents();
+            session.setAttribute("upcomingEvents", upcoming); 
+            
+            // 5. Successful Redirect
+            response.sendRedirect("homepage.jsp");
+        } else {
+            // 6. Login Failed - Invalid credentials
+            response.sendRedirect("login.jsp?error=invalid");
+        }
+    }
+    
+    /**
+     * Handle user registration logic
      */
     private void handleRegistration(HttpServletRequest request, HttpServletResponse response) 
             throws IOException {
         
-        // Get form parameters
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         String email = request.getParameter("email");
@@ -55,95 +94,38 @@ public class authController extends HttpServlet {
         String clubIdStr = request.getParameter("club_id");
         String facultyIdStr = request.getParameter("faculty_id");
         
-        // Validate required fields
-        if (username == null || username.trim().isEmpty() ||
-            password == null || password.trim().isEmpty() ||
-            email == null || email.trim().isEmpty()) {
+        if (username == null || password == null || email == null) {
             response.sendRedirect("register.jsp?error=missing_fields");
             return;
         }
         
-        // Check if email already exists
-        User existingUser = userDAO.findByEmail(email);
-        if (existingUser != null) {
+        // Check for existing user
+        if (userDAO.findByEmail(email) != null) {
             response.sendRedirect("register.jsp?error=email_exists");
             return;
         }
         
-        // Create new user object
+        // Create new user object matching the 'user' table ENUM
         User newUser = new User();
         newUser.setUserName(username);
-        newUser.setUserPassword(password); // TODO: Hash password in production!
+        newUser.setUserPassword(password);
         newUser.setUserEmail(email);
         newUser.setUserPhone(phone);
-        newUser.setUserRole("Student"); // Default role
+        newUser.setUserRole("Student"); // Default registration level
         
-        // Parse optional fields
-        if (clubIdStr != null && !clubIdStr.trim().isEmpty()) {
-            try {
-                newUser.setClubId(Integer.parseInt(clubIdStr));
-            } catch (NumberFormatException e) {
-                // Invalid club ID, ignore
-            }
+        try {
+            if (clubIdStr != null) newUser.setClubId(Integer.parseInt(clubIdStr));
+            if (facultyIdStr != null) newUser.setFacultyId(Integer.parseInt(facultyIdStr));
+        } catch (NumberFormatException e) {
+            // Log and ignore invalid numeric inputs
         }
         
-        if (facultyIdStr != null && !facultyIdStr.trim().isEmpty()) {
-            try {
-                newUser.setFacultyId(Integer.parseInt(facultyIdStr));
-            } catch (NumberFormatException e) {
-                // Invalid faculty ID, ignore
-            }
-        }
-        
-        // Save to database
         boolean success = userDAO.create(newUser);
         
         if (success) {
             response.sendRedirect("login.jsp?success=registered");
         } else {
             response.sendRedirect("register.jsp?error=registration_failed");
-        }
-    }
-    
-    /**
-     * Handle user login
-     */
-    private void handleLogin(HttpServletRequest request, HttpServletResponse response) 
-            throws IOException, ServletException{
-        
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
-        
-        // Validate input
-        if (username == null || username.trim().isEmpty() ||
-            password == null || password.trim().isEmpty()) {
-            response.sendRedirect("login.jsp?error=missing_credentials");
-            return;
-        }
-        
-        // Find user by credentials
-        User user = userDAO.findByCredentials(username, password);
-        
-        if (user != null) {
-            // Login successful - Create session
-            HttpSession session = request.getSession();
-            session.setAttribute("userId", user.getUserId());
-            session.setAttribute("username", user.getUserName());
-            session.setAttribute("userEmail", user.getUserEmail());
-            session.setAttribute("userRole", user.getUserRole());
-            session.setAttribute("userClubID", user.getClubId());
-            session.setAttribute("userFacultyID", user.getFacultyId());
-            
-            EventDAO eventDAO = new EventDAO();
-            List<Event> upcoming = eventDAO.findUpcomingEvents();
-            request.setAttribute("upcomingEvents", upcoming);
-            
-            
-            // Redirect to homepage
-            request.getRequestDispatcher("homepage.jsp").forward(request,response);
-        } else {
-            // Login failed
-            response.sendRedirect("login.jsp?error=invalid");
         }
     }
 }
