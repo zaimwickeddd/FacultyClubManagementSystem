@@ -1,12 +1,18 @@
 package com.mycompany.facultyclubmanagementsystem.dao;
 
 import com.mycompany.facultyclubmanagementsystem.model.Event;
-import com.mycompany.facultyclubmanagementsystem.util.DBConnection;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
+import com.mycompany.facultyclubmanagementsystem.util.DBConnection; // To connect to your MySQL DB
+import java.sql.Connection; // To manage the connection object
+import java.sql.PreparedStatement; // To execute the SELECT queries
+import java.sql.ResultSet; // To hold the data returned from the DB
+import java.sql.SQLException; // To handle database errors
+import java.util.ArrayList; // To create the list of events
+import java.util.HashMap; // To store event details as key-value pairs
+import java.util.List; // For the List interface
+import java.util.Map; // For the Map interface
+import jakarta.servlet.http.HttpServletRequest; // To accept the request object in your method
+import jakarta.servlet.http.HttpSession; // To save data to the session for the homepage
 
 /**
  * Data Access Object for Event
@@ -144,6 +150,52 @@ public class EventDAO {
             e.printStackTrace();
         }
         return false;
+    }
+    
+    public void getEventStatus(HttpServletRequest request) {
+        // 1. Declare the lists (This fixes the 'cannot find symbol' error)
+        List<Map<String, String>> upcomingEvents = new ArrayList<>();
+        List<Map<String, String>> eventStatuses = new ArrayList<>();
+
+        try (Connection conn = DBConnection.getConnection()) {
+
+            // 2. Fetch Upcoming Events (Middle Card)
+            // This gets the next 3 events by date
+            String sqlUpcoming = "SELECT EventName, EventDate FROM event ORDER BY EventDate ASC LIMIT 3";
+            PreparedStatement ps1 = conn.prepareStatement(sqlUpcoming);
+            ResultSet rs1 = ps1.executeQuery();
+            while (rs1.next()) {
+                Map<String, String> event = new HashMap<>();
+                event.put("name", rs1.getString("EventName"));
+                event.put("date", rs1.getString("EventDate"));
+                upcomingEvents.add(event);
+            }
+
+            // 3. Fetch Event Statuses (Right Card) 
+            // This JOIN connects 'event' to 'eventregistration' to get the REAL status
+            String sqlStatus = "SELECT e.EventName, r.RegisStatus " +
+                               "FROM event e " +
+                               "JOIN eventregistration r ON e.EventID = r.EventID " +
+                               "ORDER BY r.RegisDate DESC LIMIT 3";
+
+            PreparedStatement ps2 = conn.prepareStatement(sqlStatus);
+            ResultSet rs2 = ps2.executeQuery();
+            while (rs2.next()) {
+                Map<String, String> statusMap = new HashMap<>();
+                statusMap.put("name", rs2.getString("EventName"));
+                // This pulls 'APPROVED', 'REJECTED', or 'PENDING' from the DB
+                statusMap.put("status", rs2.getString("RegisStatus")); 
+                eventStatuses.add(statusMap);
+            }
+
+            // 4. Save to Session so the Homepage can see the data
+            HttpSession session = request.getSession();
+            session.setAttribute("upcomingEvents", upcomingEvents);
+            session.setAttribute("userStatuses", eventStatuses);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
     
     /**

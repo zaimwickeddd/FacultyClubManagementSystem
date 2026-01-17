@@ -205,28 +205,29 @@
         </div>
 
         <%-- SECTION 3: STATUS (Shared/Contextual) --%>
-        <section class="card">
+        <div class="card">
             <h2 class="card-title">Event Status</h2>
-            <div class="list-item">
-                <span>TEAM BUILDING</span>
-                <span class="status-pill">APPROVED</span>
-            </div>
-            <div class="list-item">
-                <span>CPROM</span>
-                <span class="status-pill">REJECTED</span>
-            </div>
-            <div class="list-item">
-                <span>ANNUAL GATHERING</span>
-                <span class="status-pill">PENDING</span>
-            </div>
-            <p style="font-size: 0.8rem; margin-top: 20px;">
-                <% if ("Admin".equals(userRole)) { %>
-                    <em>Advisors can change these statuses in the Approval page.</em>
-                <% } else { %>
-                    <em>Track your club's application progress here.</em>
-                <% } %>
+            <%-- Loop through the status list from the session --%>
+            <c:forEach var="item" items="${sessionScope.userStatuses}">
+                <div class="list-item">
+                    <%-- Use 'name' and 'status' to match the keys in your EventDAO HashMap --%>
+                    <span class="event-name" title="${item.name}">${item.name}</span>
+                    <span class="status-pill">${item.status}</span>
+                </div>
+            </c:forEach>
+
+            <p style="font-size: 0.8rem; margin-top: auto; padding-top: 20px;">
+                <%-- Keep your role-based help text --%>
+                <c:choose>
+                    <c:when test="${userRole == 'Admin'}">
+                        <em>Advisors can change these statuses in the Approval page.</em>
+                    </c:when>
+                    <c:otherwise>
+                        <em>Track your club's application progress here.</em>
+                    </c:otherwise>
+                </c:choose>
             </p>
-        </section>
+        </div>
 
     </main>
 

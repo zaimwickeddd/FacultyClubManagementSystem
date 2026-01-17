@@ -13,11 +13,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import com.mycompany.facultyclubmanagementsystem.dao.EventDAO;
-import com.mycompany.facultyclubmanagementsystem.model.Event;
-import jakarta.servlet.http.HttpSession;
-import java.util.List;
-import java.util.Map;
+
 /**
  *
  * @author Muhamad Zulhairie
@@ -34,36 +30,6 @@ public class eventController extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    
-
-
-// ... inside your eventController class ...
-
-        @Override
-        protected void doGet(HttpServletRequest request, HttpServletResponse response)
-                throws ServletException, IOException {
-
-            HttpSession session = request.getSession();
-            Integer userId = (Integer) session.getAttribute("userId");
-
-            // Ensure user is logged in before fetching data
-            if (userId != null) {
-                EventDAO eventDAO = new EventDAO();
-
-                // 1. Fetch data for the dashboard cards
-                List<Event> upcoming = eventDAO.findUpcomingEvents();
-                List<Map<String, String>> statuses = eventDAO.getUserEventStatuses(userId);
-
-                // 2. Set attributes so homepage.jsp can see them
-                request.setAttribute("upcomingEvents", upcoming);
-                request.setAttribute("userStatuses", statuses);
-
-                // 3. Forward to the homepage
-                request.getRequestDispatcher("homepage.jsp").forward(request, response);
-            } else {
-                response.sendRedirect("login.jsp");
-            }
-        }
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         

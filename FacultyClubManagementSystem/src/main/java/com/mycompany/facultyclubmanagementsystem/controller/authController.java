@@ -70,6 +70,7 @@ public class authController extends HttpServlet {
             
             EventDAO eventDAO = new EventDAO();
             List<Event> upcoming = eventDAO.findUpcomingEvents();
+            eventDAO.getEventStatus(request);
 
             session.setAttribute("upcomingEvents", upcoming);
             
