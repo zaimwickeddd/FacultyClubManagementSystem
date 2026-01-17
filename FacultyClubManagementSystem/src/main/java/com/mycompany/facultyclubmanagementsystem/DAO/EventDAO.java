@@ -5,6 +5,8 @@ import com.mycompany.facultyclubmanagementsystem.util.DBConnection;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * Data Access Object for Event
@@ -85,7 +87,7 @@ public class EventDAO {
     public List<Event> findUpcomingEvents() {
         List<Event> events = new ArrayList<>();
         // Using the exact table name 'events' from your screenshot
-        String sql = "SELECT EventName, EventDate FROM events WHERE EventDate >= CURDATE() " +
+        String sql = "SELECT EventName, EventDate FROM event WHERE EventDate >= CURDATE() " +
                      "AND EventStatus = 'Upcoming' ORDER BY EventDate ASC LIMIT 3";
 
         try (Connection conn = DBConnection.getConnection();
@@ -235,6 +237,32 @@ public class EventDAO {
             e.printStackTrace();
         }
         return false;
+    }
+    
+    public List<Map<String, String>> getUserEventStatuses(int userId) {
+        List<Map<String, String>> statuses = new ArrayList<>();
+        // JOIN matches the EventID from both tables to get Name and Status
+        // Note: Using your new shortened name 'RegisStatus'
+        String sql = "SELECT e.EventName, r.RegisStatus " +
+                     "FROM event e JOIN eventregistration r ON e.EventID = r.EventID " +
+                     "WHERE r.UserID = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Map<String, String> map = new HashMap<>();
+                    map.put("name", rs.getString("EventName"));
+                    map.put("status", rs.getString("RegisStatus")); // Updated here
+                    statuses.add(map);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return statuses;
     }
     
     /**
