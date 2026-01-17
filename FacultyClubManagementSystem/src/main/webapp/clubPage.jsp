@@ -86,7 +86,7 @@
             <div><i class="fas fa-user-circle fa-2x"></i></div>
             <strong><%= userName %></strong><br>
             <small>(<%= userRole %>)</small><br>
-            <a href="logout.jsp" class="logout-link">LOGOUT</a>
+            <a href="Logout.jsp" class="logout-link">LOGOUT</a>
         </div>
     </header>
 
