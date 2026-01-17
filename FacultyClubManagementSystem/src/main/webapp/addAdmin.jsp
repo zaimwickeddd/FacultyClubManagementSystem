@@ -1,4 +1,3 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
     String currentRole = (String) session.getAttribute("userRole");
     if (!"Member".equals(currentRole)) {
@@ -6,19 +5,14 @@
         return;
     }
 %>
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Add New Admin | UiTM</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
+<%@ include file="header.jsp" %>
+<style>
         body { font-family: 'Inter', sans-serif; background-color: #fbc2eb; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
         .form-container { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); width: 350px; }
         h2 { text-align: center; }
         input, select { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 10px; box-sizing: border-box; }
         .btn-submit { background-color: #ff99f1; border: 2px solid #000; width: 100%; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer; }
     </style>
-</head>
 <body>
     <div class="form-container">
         <h2>Register New Admin</h2>
