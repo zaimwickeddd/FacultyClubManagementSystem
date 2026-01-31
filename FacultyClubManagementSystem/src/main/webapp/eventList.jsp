@@ -5,14 +5,10 @@
 --%>
 
 <%@ include file="header.jsp" %>
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<!DOCTYPE html>
-<html>
+
 <head>
     <title>All Events | UiTM</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { 
             --bg-pink: #fbc2eb; 
@@ -252,3 +248,4 @@
 
 </body>
 </html>
+<%@ include file="footer.jsp" %>
