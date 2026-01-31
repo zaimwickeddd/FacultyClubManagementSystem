@@ -1,15 +1,14 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
+ * Document modified : eventListController
+ * Modified on : 31 Jan 2026, 11:43:00 pm
+ * Author     : Anderson Giggs
  */
 package com.mycompany.facultyclubmanagementsystem.controller;
 
 import com.mycompany.facultyclubmanagementsystem.dao.EventDAO;
 import com.mycompany.facultyclubmanagementsystem.model.Event;
-import com.mycompany.facultyclubmanagementsystem.util.DBConnection;
 import java.io.IOException;
-import java.sql.*;
-import java.util.*;
+import java.util.List;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -18,51 +17,43 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 /**
- *
- * @author Muhamad Zulhairie
+ * Controller to display all events from the event table
+ * Handles fetching and displaying event list for all user roles
+ * 
+ * @author Anderson Giggs
  */
-
-
 @WebServlet("/eventListController")
 public class eventListController extends HttpServlet {
+    
+    private EventDAO eventDAO = new EventDAO();
+    
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
         HttpSession session = request.getSession();
-        // Retrieve the club name from the session
-        String userClub = (String) session.getAttribute("userClub");
-
+        String userRole = (String) session.getAttribute("userRole");
+        
         // Redirect to login if no session exists
-        if (userClub == null) {
+        if (userRole == null) {
             response.sendRedirect("login.jsp");
             return;
         }
-
-        List<Map<String, String>> eventList = new ArrayList<>();
         
-        try (Connection conn = DBConnection.getConnection()) {
-            // Filter query by the user's club
-            String sql = "SELECT * FROM events WHERE club_name = ? ORDER BY start_date DESC";
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, userClub);
+        try {
+            // Fetch all events from database using EventDAO
+            List<Event> allEvents = eventDAO.findAll();
             
-            ResultSet rs = ps.executeQuery();
+            // Set events as request attribute to be accessed in JSP
+            request.setAttribute("events", allEvents);
             
-            while (rs.next()) {
-                Map<String, String> event = new HashMap<>();
-                event.put("title", rs.getString("title"));
-                event.put("date", rs.getString("start_date"));
-                event.put("venue", rs.getString("venue"));
-                event.put("status", rs.getString("status"));
-                eventList.add(event);
-            }
-            
-            request.setAttribute("events", eventList);
-            request.setAttribute("clubName", userClub);
+            // Forward to eventList.jsp
             request.getRequestDispatcher("eventList.jsp").forward(request, response);
             
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
+            request.setAttribute("errorMessage", "Error loading events: " + e.getMessage());
+            request.getRequestDispatcher("eventList.jsp").forward(request, response);
         }
     }
 }

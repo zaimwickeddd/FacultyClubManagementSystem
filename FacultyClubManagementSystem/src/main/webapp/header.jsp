@@ -101,7 +101,7 @@
         <a href="homepage.jsp" class="nav-item">
             <i class="fas fa-home"></i> Home
         </a>
-        <a href="eventList.jsp" class="nav-item">
+        <a href="eventListController" class="nav-item">
             <i class="fas fa-calendar-alt"></i> Events
         </a>
         <a href="clubPage.jsp" class="nav-item">
