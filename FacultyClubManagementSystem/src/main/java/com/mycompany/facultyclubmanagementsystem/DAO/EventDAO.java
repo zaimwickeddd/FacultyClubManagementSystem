@@ -361,8 +361,13 @@ public class EventDAO {
         int ceAppId = rs.getInt("CEAppID");
         event.setCeAppId(rs.wasNull() ? null : ceAppId);
         
-        event.setCreatedAt(rs.getTimestamp("created_at"));
-        event.setUpdatedAt(rs.getTimestamp("updated_at"));
+        // Try to get timestamps if they exist in the table
+        try {
+            event.setCreatedAt(rs.getTimestamp("created_at"));
+            event.setUpdatedAt(rs.getTimestamp("updated_at"));
+        } catch (SQLException e) {
+            // Columns don't exist, skip them
+        }
         
         return event;
     }
