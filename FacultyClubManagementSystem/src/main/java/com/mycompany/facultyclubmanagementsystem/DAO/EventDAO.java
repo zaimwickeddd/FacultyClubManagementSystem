@@ -295,12 +295,14 @@ public class EventDAO {
         List<Map<String, String>> statuses = new ArrayList<>();
         // JOIN matches the EventID from both tables to get Name and Status
         // Note: Using your new shortened name 'RegisStatus'
-        String sql = "SELECT e.EventName, r.RegisStatus " +
-                     "FROM event e JOIN eventregistration r ON e.EventID = r.EventID " +
-                     "WHERE r.UserID = ?";
+        // Change the sqlStatus string in your getEventStatus method:
+        String sqlStatus = "SELECT e.EventName, COALESCE(r.RegisStatus, 'No Registrations') AS RegisStatus " +
+                            "FROM event e " +
+                            "LEFT JOIN eventregistration r ON e.EventID = r.EventID " +
+                            "ORDER BY e.EventDate DESC LIMIT 3";
 
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sqlStatus)) {
 
             ps.setInt(1, userId);
             try (ResultSet rs = ps.executeQuery()) {
@@ -348,15 +350,20 @@ public class EventDAO {
         Event event = new Event();
         event.setEventId(rs.getInt("EventID"));
         event.setEventName(rs.getString("EventName"));
-        event.setEventDescription(rs.getString("EventDescription"));
+        
+        //db pun lom ada EventDescription
+        //event.setEventDescription(rs.getString("EventDescription"));
+        
         event.setEventDate(rs.getDate("EventDate"));
         event.setEventTime(rs.getTime("EventTime"));
         event.setEventVenue(rs.getString("EventVenue"));
         event.setEventStatus(rs.getString("EventStatus"));
         event.setEventAttendance(rs.getInt("EventAttendance"));
         
+        /* Comment sbb kita lom ada MaxParticipants dlm DB
         int maxParticipants = rs.getInt("MaxParticipants");
         event.setMaxParticipants(rs.wasNull() ? null : maxParticipants);
+        */
         
         int ceAppId = rs.getInt("CEAppID");
         event.setCeAppId(rs.wasNull() ? null : ceAppId);
