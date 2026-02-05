@@ -150,7 +150,9 @@
                     <h3>COMPASS</h3>
                     <p>Student Member</p>
                 </div>
-                <button class="btn-view">VIEW PROFILE</button>
+                <button class="btn-view" onclick="window.location.href='profile.jsp'">
+                    VIEW PROFILE
+                </button>
             <% } %>
         </section>
 

@@ -37,6 +37,7 @@ public class UserDAO {
         user.setUserPassword(rs.getString("UserPassword"));
         user.setUserEmail(rs.getString("UserEmail"));
         user.setUserPhone(rs.getString("UserPhone"));
+        user.setUserSemester(rs.getInt("UserSemester"));
         
         // Handle Nullable Integers
         int semester = rs.getInt("UserSemester");

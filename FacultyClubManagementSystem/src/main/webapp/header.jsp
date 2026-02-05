@@ -117,11 +117,19 @@
     </nav>
 
     <div class="user-profile">
+    <a href="profile.jsp" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit;">
         <i class="fas fa-user-circle fa-2x"></i>
-        <div class="user-info">
-            <strong><%= session.getAttribute("username") %></strong>
-            <small>(<%= session.getAttribute("userRole") %>)</small><br>
-            <a href="LogoutServlet" class="logout-link">LOGOUT</a>
+        
+        <div style="display: flex; flex-direction: column; text-align: left;">
+            <strong style="font-size: 1rem; line-height: 1.1;">
+                <%= session.getAttribute("username") %>
+            </strong>
+            <small style="color: #666; font-size: 0.85rem; line-height: 1.1;">
+                (<%= session.getAttribute("userRole") %>)
+            </small>
+            
+            <a href="LogoutServlet" class="logout-link" style="margin-top: 5px;">LOGOUT</a>
         </div>
-    </div>
+    </a>
+</div>
 </header>

@@ -67,6 +67,8 @@ public class authController extends HttpServlet {
             session.setAttribute("userRole", user.getUserRole()); // 'Student', 'Member', or 'Advisor'
             session.setAttribute("userClubID", user.getClubId());
             session.setAttribute("userFacultyID", user.getFacultyId());
+            session.setAttribute("userPhone", user.getUserPhone());
+            session.setAttribute("userSemester", user.getUserSemester());
             
             EventDAO eventDAO = new EventDAO();
             List<Event> upcoming = eventDAO.findUpcomingEvents();
