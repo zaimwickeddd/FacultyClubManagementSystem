@@ -30,26 +30,31 @@ public class eventListController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         HttpSession session = request.getSession();
         String userRole = (String) session.getAttribute("userRole");
-        
-        // Redirect to login if no session exists
+
         if (userRole == null) {
             response.sendRedirect("login.jsp");
             return;
         }
-        
+
         try {
-            // Fetch all events from database using EventDAO
-            List<Event> allEvents = eventDAO.findAll();
-            
-            // Set events as request attribute to be accessed in JSP
-            request.setAttribute("events", allEvents);
-            
-            // Forward to eventList.jsp
+            // Everyone gets to see 'Upcoming' events
+            List<Event> upcomingEvents = eventDAO.findByStatus("Upcoming");
+            request.setAttribute("events", upcomingEvents);
+
+            // Members and Advisors get extra categories
+            if ("Member".equals(userRole) || "Advisor".equals(userRole)) {
+                List<Event> approvedEvents = eventDAO.findByStatus("Approved");
+                List<Event> rejectedEvents = eventDAO.findByStatus("Rejected");
+
+                request.setAttribute("approvedEvents", approvedEvents);
+                request.setAttribute("rejectedEvents", rejectedEvents);
+            }
+
             request.getRequestDispatcher("eventList.jsp").forward(request, response);
-            
+
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("errorMessage", "Error loading events: " + e.getMessage());

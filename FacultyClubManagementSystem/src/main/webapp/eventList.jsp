@@ -244,6 +244,60 @@
             </div>
         </c:otherwise>
     </c:choose>
+    
+    <%-- SECTION: Approved and Rejected (Only Members and Advisors) --%>
+    <c:if test="${sessionScope.userRole == 'Member' || sessionScope.userRole == 'Advisor'}">
+        
+        <hr style="margin: 50px 0; border: 1px solid rgba(0,0,0,0.1);">
+        
+        <h2 style="color: var(--approve-green);"><i class="fas fa-check-circle"></i> Approved Events</h2>
+        <c:choose>
+            <c:when test="${not empty approvedEvents}">
+                <div class="event-grid">
+                    <c:forEach var="event" items="${approvedEvents}">
+                        <div class="event-card" style="border-left: 10px solid var(--approve-green);">
+                            <div class="event-header">
+                                <h3 class="event-title">${event.eventName}</h3>
+                                <div class="status-badge" style="border-color: var(--approve-green); color: var(--approve-green);">
+                                    ${event.eventStatus}
+                                </div>
+                            </div>
+                            <div class="event-details">
+                                <div class="event-detail-row"><i class="fas fa-calendar"></i> <span>${event.eventDate}</span></div>
+                                <div class="event-detail-row"><i class="fas fa-map-marker-alt"></i> <span>${event.eventVenue}</span></div>
+                            </div>
+                        </div>
+                    </c:forEach>
+                </div>
+            </c:when>
+            <c:otherwise><p class="subtitle">No approved events yet.</p></c:otherwise>
+        </c:choose>
+
+        <h2 style="color: var(--reject-red); margin-top: 40px;"><i class="fas fa-times-circle"></i> Rejected Events</h2>
+        <c:choose>
+            <c:when test="${not empty rejectedEvents}">
+                <div class="event-grid">
+                    <c:forEach var="event" items="${rejectedEvents}">
+                        <div class="event-card" style="border-left: 10px solid var(--reject-red); opacity: 0.8;">
+                            <div class="event-header">
+                                <h3 class="event-title">${event.eventName}</h3>
+                                <div class="status-badge" style="border-color: var(--reject-red); color: var(--reject-red);">
+                                    ${event.eventStatus}
+                                </div>
+                            </div>
+                            <div class="event-details">
+                                <div class="event-detail-row"><i class="fas fa-calendar"></i> <span>${event.eventDate}</span></div>
+                                <div class="event-detail-row"><i class="fas fa-ban"></i> <span>This event was rejected</span></div>
+                            </div>
+                        </div>
+                    </c:forEach>
+                </div>
+            </c:when>
+            <c:otherwise><p class="subtitle">No rejected events recorded.</p></c:otherwise>
+        </c:choose>
+
+    </c:if>
+</div> <%-- End of Container --%>
 </div>
 
 </body>

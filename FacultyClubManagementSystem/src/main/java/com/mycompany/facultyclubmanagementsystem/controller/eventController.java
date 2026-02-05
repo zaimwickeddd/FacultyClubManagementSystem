@@ -21,52 +21,67 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet(name = "eventController", urlPatterns = {"/eventController"})
 public class eventController extends HttpServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        // Collect form data
-        String title = request.getParameter("eventTitle");
+
+        // 1. Collect data from mockup fields
+        String title = request.getParameter("eventName");
         String startDate = request.getParameter("startDate");
         String startTime = request.getParameter("startTime");
         String venue = request.getParameter("venue");
+        
+        // NEW: Collect these to match your mockup design
+        String description = request.getParameter("eventDescription");
+        String category = request.getParameter("category");
+        String budgetStr = request.getParameter("budget");
+        double budget = (budgetStr != null && !budgetStr.isEmpty()) ? Double.parseDouble(budgetStr) : 0.0;
+
+        // Session check: Always safer to get clubID from session than a hidden field
+        Integer clubId = (Integer) request.getSession().getAttribute("clubID");
+        if (clubId == null) clubId = 1; // Fallback for testing
 
         Connection conn = null;
         try {
             conn = DBConnection.getConnection();
-            // Fixed: Using correct table name 'event' and matching database schema columns
-            String sql = "INSERT INTO event (EventName, EventDate, EventTime, EventVenue, " +
-                        "EventStatus, EventAttendance) " +
-                        "VALUES (?, ?, ?, ?, 'Upcoming', 0)";
-            
-            PreparedStatement statement = conn.prepareStatement(sql);
-            statement.setString(1, title);  // EventName
-            statement.setString(2, startDate);  // EventDate
-            statement.setString(3, startTime);  // EventTime
-            statement.setString(4, venue);  // EventVenue
-            // EventStatus = 'Upcoming' and EventAttendance = 0 are set in SQL
+            conn.setAutoCommit(false); 
 
+            // STEP A: Insert into 'clubeventapplication'
+            // Added EventDescription, EventCategory, and EventBudget columns
+            String sqlApp = "INSERT INTO clubeventapplication (CEAppStatus, ClubID, EventDescription, EventCategory, EventBudget) VALUES ('Pending', ?, ?, ?, ?)";
+            PreparedStatement psApp = conn.prepareStatement(sqlApp, PreparedStatement.RETURN_GENERATED_KEYS);
+            psApp.setInt(1, clubId);
+            psApp.setString(2, description);
+            psApp.setString(3, category);
+            psApp.setDouble(4, budget);
+            psApp.executeUpdate();
 
-            int row = statement.executeUpdate();
-            if (row > 0) {
-                // Success! Redirect back to dashboard
-                response.sendRedirect("homepage.jsp?success=1");
-            }
+            var rs = psApp.getGeneratedKeys();
+            int generatedAppID = rs.next() ? rs.getInt(1) : 0;
+
+            // STEP B: Insert into 'event' table
+            // Linking the two tables using the generatedAppID
+            String sqlEvent = "INSERT INTO event (EventName, EventDate, EventTime, EventVenue, " +
+                              "EventStatus, EventAttendance, ClubID, CEAppID) " +
+                              "VALUES (?, ?, ?, ?, 'Pending', 0, ?, ?)";
+
+            PreparedStatement psEvent = conn.prepareStatement(sqlEvent);
+            psEvent.setString(1, title);
+            psEvent.setString(2, startDate);
+            psEvent.setString(3, startTime);
+            psEvent.setString(4, venue);
+            psEvent.setInt(5, clubId);
+            psEvent.setInt(6, generatedAppID); 
+            psEvent.executeUpdate();
+
+            conn.commit(); 
+            response.sendRedirect("eventListController?success=1");
+
         } catch (Exception e) {
+            if (conn != null) try { conn.rollback(); } catch (Exception ex) {}
             e.printStackTrace();
             response.sendRedirect("createEvent.jsp?error=1");
         } finally {
-            if (conn != null) {
-                try { conn.close(); } catch (Exception ex) { }
-            }
+            if (conn != null) try { conn.close(); } catch (Exception ex) {}
         }
     }
 }
