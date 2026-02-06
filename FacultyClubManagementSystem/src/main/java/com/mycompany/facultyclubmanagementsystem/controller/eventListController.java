@@ -49,7 +49,7 @@ public class eventListController extends HttpServlet {
             return;
         }
 
-        try {
+        try {   
             // 1. Fetch Upcoming and Approved Events
             //List<Event> upcomingEvents = eventDAO.findByStatus("Upcoming");
             List<Event> approvedEvents = eventDAO.findByStatus("Upcoming");

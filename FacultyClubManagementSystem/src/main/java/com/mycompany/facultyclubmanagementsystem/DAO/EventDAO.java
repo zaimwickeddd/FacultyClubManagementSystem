@@ -64,54 +64,76 @@ public class EventDAO {
         return events;
     }
     
+    
     /**
      * Get events by status
      */
     public List<Event> findByStatus(String status) {
-        List<Event> events = new ArrayList<>();
-        String sql = "SELECT * FROM event WHERE EventStatus = ? ORDER BY EventDate DESC";
+    List<Event> events = new ArrayList<>();
+    // 1. Calculate the dynamic status (Upcoming, Ongoing, Ended)
+    // 2. Sort: Future (Furthest first) -> Ongoing -> Past
+    String sql = "SELECT *, " +
+                 "CASE " +
+                 "  WHEN EventDate > CURDATE() THEN 'Upcoming' " +
+                 "  WHEN EventDate = CURDATE() THEN 'Ongoing' " +
+                 "  ELSE 'Ended' " +
+                 "END AS CalcStatus " +
+                 "FROM event " +
+                 "WHERE EventStatus = ? " + 
+                 "ORDER BY " +
+                 "  CASE " +
+                 "    WHEN EventDate > CURDATE() THEN 1 " + // Upcoming first
+                 "    WHEN EventDate = CURDATE() THEN 2 " + // Ongoing second
+                 "    ELSE 3 " +                           // Ended last
+                 "  END, " +
+                 "  EventDate DESC"; // Furthest future date at the very top
+
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
         
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            
-            ps.setString(1, status);
-            
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    events.add(mapResultSetToEvent(rs));
-                }
+        ps.setString(1, status);
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                Event event = new Event();
+                event.setEventId(rs.getInt("EventID"));
+                event.setEventName(rs.getString("EventName"));
+                event.setEventDate(rs.getDate("EventDate"));
+                // Set the status to our calculated value for the UI cards
+                event.setEventStatus(rs.getString("CalcStatus")); 
+                events.add(event);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-        return events;
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
-    
+    return events;
+}
     /**
      * Get upcoming events
      */
     public List<Event> findUpcomingEvents() {
-        List<Event> events = new ArrayList<>();
-        // Using the exact table name 'event' from your screenshot
-        String sql = "SELECT EventName, EventDate FROM event WHERE EventDate >= CURDATE() " +
-                     "AND EventStatus = 'Approved' ORDER BY EventDate ASC LIMIT 3";
+    List<Event> events = new ArrayList<>();
+    // SQL: Fetch events that are NOT Rejected and are scheduled for today onwards
+    String sql = "SELECT EventName, EventDate FROM event " +
+                 "WHERE EventStatus != 'Rejected' " + 
+                 "AND EventDate >= CURDATE() " +
+                 "ORDER BY EventDate ASC LIMIT 3";
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql);
+         ResultSet rs = ps.executeQuery()) {
 
-            while (rs.next()) {
-                Event event = new Event();
-                // Matching your database attribute names exactly
-                event.setEventName(rs.getString("EventName"));
-                event.setEventDate(rs.getDate("EventDate"));
-                events.add(event);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        while (rs.next()) {
+            Event event = new Event();
+            event.setEventName(rs.getString("EventName")); // Matches DB column
+            event.setEventDate(rs.getDate("EventDate")); // Matches DB column
+            events.add(event);
         }
-        return events;
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
+    return events;
+}
     
     /**
      * Create new event

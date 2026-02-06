@@ -49,7 +49,7 @@ public class approvalController extends HttpServlet {
 
             // STEP 2: Update 'event' table status
             // --- MODIFIED: If Approved -> "Approved", If Rejected -> "Rejected" ---
-            String eventStatus = action.equals("Approved") ? "Approved" : "Rejected";
+            String eventStatus = action.equals("Approved") ? "Upcoming" : "Rejected";
             // ----------------------------------------------------------------------
             
             String sqlEvent = "UPDATE event SET EventStatus = ? WHERE CEAppID = ?";
