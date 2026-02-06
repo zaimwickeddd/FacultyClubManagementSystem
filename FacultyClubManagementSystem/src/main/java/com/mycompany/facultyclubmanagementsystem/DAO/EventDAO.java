@@ -400,4 +400,76 @@ public class EventDAO {
         
         return event;
     }
+    
+    /**
+     * Get Approved events filtered by ClubID
+     */
+    public List<Event> findApprovedByClub(int clubId) {
+        List<Event> events = new ArrayList<>();
+        String sql = "SELECT * FROM event WHERE ClubID = ? AND EventStatus = 'Approved' ORDER BY EventDate DESC";
+        
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            ps.setInt(1, clubId);
+            
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    events.add(mapResultSetToEvent(rs));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return events;
+    }
+
+    /**
+     * Get Rejected events filtered by ClubID
+     */
+    public List<Event> findRejectedByClub(int clubId) {
+        List<Event> events = new ArrayList<>();
+        String sql = "SELECT * FROM event WHERE ClubID = ? AND EventStatus = 'Rejected' ORDER BY EventDate DESC";
+        
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            ps.setInt(1, clubId);
+            
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    events.add(mapResultSetToEvent(rs));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return events;
+    }
+    
+    /**
+     * Get all events filtered by ClubID
+     */
+    public List<Event> findEventsByClub(int clubId) {
+        List<Event> events = new ArrayList<>();
+        String sql = "SELECT * FROM event " +
+                     "WHERE ClubID = ? " +
+                     "ORDER BY EventDate DESC, EventTime DESC";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            ps.setInt(1, clubId);
+            
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    events.add(mapResultSetToEvent(rs));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return events;
+    }
+      
 }

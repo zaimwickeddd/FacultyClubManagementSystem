@@ -24,7 +24,8 @@ public class Event {
     private Integer ceAppId;
     private Timestamp createdAt;
     private Timestamp updatedAt;
-    
+    private int clubId; 
+
     // Constructors
     public Event() {
     }
@@ -37,10 +38,10 @@ public class Event {
         this.eventStatus = eventStatus;
     }
     
-    // Full constructor
+    // --- UPDATED FULL CONSTRUCTOR ---
     public Event(int eventId, String eventName, String eventDescription, Date eventDate, 
                  Time eventTime, String eventVenue, String eventStatus, int eventAttendance, 
-                 Integer maxParticipants, Integer ceAppId) {
+                 Integer maxParticipants, Integer ceAppId, int clubId) {
         this.eventId = eventId;
         this.eventName = eventName;
         this.eventDescription = eventDescription;
@@ -51,6 +52,7 @@ public class Event {
         this.eventAttendance = eventAttendance;
         this.maxParticipants = maxParticipants;
         this.ceAppId = ceAppId;
+        this.clubId = clubId; // Set clubId
     }
     
     // Getters and Setters
@@ -148,6 +150,14 @@ public class Event {
     
     public void setUpdatedAt(Timestamp updatedAt) {
         this.updatedAt = updatedAt;
+    }
+    
+    public int getClubId() {
+        return clubId;
+    }
+    
+    public void setClubId(int clubId) {
+        this.clubId = clubId;
     }
     
     @Override

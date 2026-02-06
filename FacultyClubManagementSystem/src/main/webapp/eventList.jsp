@@ -189,21 +189,28 @@
             cursor: not-allowed;
             opacity: 0.7;
         }
+        
+        /* ADD THIS TO YOUR CSS STYLE BLOCK */
+        .text-success { color: #28a745; border-color: #28a745 !important; }
+        .text-danger { color: #dc3545; border-color: #dc3545 !important; }
+        .text-warning { color: #ffc107; border-color: #ffc107 !important; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <%-- Only Members can create events --%>
-    <c:if test="${sessionScope.userRole == 'Member'}">
-        <a href="createEvent.jsp" class="btn-add">
-            <i class="fas fa-plus"></i> Create New Event
-        </a>
-    </c:if>
-
-    <h1>All Events</h1>
-    <p class="subtitle">Browse all events organized by faculty clubs</p>
-    
+    <p class="subtitle">
+        <c:choose>
+            <c:when test="${not empty sessionScope.clubName}">
+                Viewing events for: <strong>${sessionScope.clubName}</strong>
+            </c:when>
+            <c:otherwise>
+                Browse all events organized by faculty clubs
+            </c:otherwise>
+        </c:choose>
+    </p>
+   
     <%-- Display event count --%>
     <c:if test="${not empty events}">
         <p class="event-count">
@@ -227,7 +234,10 @@
                     <div class="event-card">
                         <div class="event-header">
                             <h3 class="event-title">${event.eventName}</h3>
-                            <div class="status-badge">${event.eventStatus}</div>
+                            <%-- DYNAMIC STATUS BADGE CLASS --%>
+                            <div class="status-badge ${event.eventStatus == 'Approved' ? 'text-success' : (event.eventStatus == 'Rejected' ? 'text-danger' : 'text-warning')}">
+                                ${event.eventStatus}
+                            </div>
                         </div>
 
                         <%-- FILL THIS PART WITH EVENT DETAILS --%>
@@ -258,19 +268,17 @@
                         </c:if>
 
                         <%-- MODIFIED ACTION BUTTONS FOR STUDENTS --%>
+                        <%-- ACTIONS: REGISTER FOR STUDENTS --%>
                         <c:if test="${sessionScope.userRole == 'Student'}">
                             <div class="event-actions" style="margin-top: 15px; text-align: center;">
-                                
-                                <%-- CHECK IF ALREADY REGISTERED USING REGISTEREDEVENTIDS LIST --%>
+                                <%-- CHECK IF ALREADY REGISTERED --%>
                                 <c:choose>
                                     <c:when test="${registeredEventIds.contains(event.eventId)}">
-                                        <%-- Disabled Button --%>
                                         <button class="btn-register btn-register-disabled" disabled>
                                             <i class="fas fa-check"></i> Already Registered
                                         </button>
                                     </c:when>
                                     <c:otherwise>
-                                        <%-- Active Register Form --%>
                                         <form action="RegisterEventServlet" method="POST">
                                             <input type="hidden" name="eventId" value="${event.eventId}">
                                             <button type="submit" class="btn-register btn-register-active">
