@@ -48,8 +48,9 @@ public class approvalController extends HttpServlet {
             psApp.executeUpdate();
 
             // STEP 2: Update 'event' table status
-            // If Approved -> "Upcoming", If Rejected -> "Rejected"
-            String eventStatus = action.equals("Approved") ? "Upcoming" : "Rejected";
+            // --- MODIFIED: If Approved -> "Approved", If Rejected -> "Rejected" ---
+            String eventStatus = action.equals("Approved") ? "Approved" : "Rejected";
+            // ----------------------------------------------------------------------
             
             String sqlEvent = "UPDATE event SET EventStatus = ? WHERE CEAppID = ?";
             PreparedStatement psEvent = conn.prepareStatement(sqlEvent);

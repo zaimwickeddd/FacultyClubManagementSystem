@@ -50,9 +50,16 @@ public class eventListController extends HttpServlet {
         }
 
         try {
-            // Everyone gets to see 'Upcoming' events
-            List<Event> upcomingEvents = eventDAO.findByStatus("Upcoming");
-            request.setAttribute("events", upcomingEvents);
+            // 1. Fetch Upcoming and Approved Events
+            //List<Event> upcomingEvents = eventDAO.findByStatus("Upcoming");
+            List<Event> approvedEvents = eventDAO.findByStatus("Upcoming");
+            
+            // 2. Combine them for the main list ("All Events")
+            //List<Event> combinedEvents = new ArrayList<>();
+            //combinedEvents.addAll(upcomingEvents);
+            //combinedEvents.addAll(approvedEvents);
+            
+            request.setAttribute("events", approvedEvents);
 
             // --- ADDED: Logic for student registration restriction ---
             List<Integer> registeredEventIds = new ArrayList<>();
@@ -85,7 +92,7 @@ public class eventListController extends HttpServlet {
 
             // Members and Advisors get extra categories
             if ("Member".equals(userRole) || "Advisor".equals(userRole)) {
-                List<Event> approvedEvents = eventDAO.findByStatus("Approved");
+                //List<Event> approvedEvents = eventDAO.findByStatus("Approved"); dh di declare atas
                 List<Event> rejectedEvents = eventDAO.findByStatus("Rejected");
 
                 request.setAttribute("approvedEvents", approvedEvents);
