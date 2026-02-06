@@ -38,6 +38,24 @@ public class ClubDAO {
         return null;
     }
     
+    public List<Club> getAllClubs() {
+        List<Club> clubs = new ArrayList<>();
+        String sql = "SELECT * FROM club"; // Based on your table image
+        try (Connection conn = DBConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                Club club = new Club();
+                club.setClubId(rs.getInt("ClubID"));
+                club.setClubName(rs.getString("ClubName"));
+                clubs.add(club);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return clubs;
+    }
+    
     /**
      * Get all clubs
      */

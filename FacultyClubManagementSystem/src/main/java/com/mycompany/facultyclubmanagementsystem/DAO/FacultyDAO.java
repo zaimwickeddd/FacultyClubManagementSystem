@@ -17,13 +17,13 @@ public class FacultyDAO {
     /**
      * Find faculty by ID
      */
-    public Faculty findById(int facultyId) {
+    public Faculty findById(int facultyID) {
         String sql = "SELECT * FROM faculty WHERE FacultyID = ?";
         
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             
-            ps.setInt(1, facultyId);
+            ps.setInt(1, facultyID);
             
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -74,6 +74,27 @@ public class FacultyDAO {
         return false;
     }
     
+    public List<Faculty> getAllFaculties() {
+    List<Faculty> list = new ArrayList<>();
+    // Order by name so the dropdown looks organized
+    String sql = "SELECT FacultyID, FacultyName FROM faculty ORDER BY FacultyName ASC";
+    
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql);
+         ResultSet rs = ps.executeQuery()) {
+        
+        while (rs.next()) {
+            Faculty f = new Faculty();
+            f.setFacultyID(rs.getInt("FacultyID"));
+            f.setFacultyName(rs.getString("FacultyName"));
+            list.add(f);
+        }
+    } catch (Exception e) { 
+        e.printStackTrace(); 
+    }
+    return list;
+}
+    
     /**
      * Update existing faculty
      */
@@ -84,7 +105,7 @@ public class FacultyDAO {
              PreparedStatement ps = conn.prepareStatement(sql)) {
             
             ps.setString(1, faculty.getFacultyName());
-            ps.setInt(2, faculty.getFacultyId());
+            ps.setInt(2, faculty.getFacultyID());
             
             return ps.executeUpdate() > 0;
             
@@ -117,7 +138,7 @@ public class FacultyDAO {
      */
     private Faculty mapResultSetToFaculty(ResultSet rs) throws SQLException {
         Faculty faculty = new Faculty();
-        faculty.setFacultyId(rs.getInt("FacultyID"));
+        faculty.setFacultyID(rs.getInt("FacultyID"));
         faculty.setFacultyName(rs.getString("FacultyName"));
         faculty.setCreatedAt(rs.getTimestamp("created_at"));
         faculty.setUpdatedAt(rs.getTimestamp("updated_at"));

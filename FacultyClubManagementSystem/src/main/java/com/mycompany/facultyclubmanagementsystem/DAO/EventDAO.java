@@ -69,45 +69,45 @@ public class EventDAO {
      * Get events by status
      */
     public List<Event> findByStatus(String status) {
-    List<Event> events = new ArrayList<>();
-    // 1. Calculate the dynamic status (Upcoming, Ongoing, Ended)
-    // 2. Sort: Future (Furthest first) -> Ongoing -> Past
-    String sql = "SELECT *, " +
-                 "CASE " +
-                 "  WHEN EventDate > CURDATE() THEN 'Upcoming' " +
-                 "  WHEN EventDate = CURDATE() THEN 'Ongoing' " +
-                 "  ELSE 'Ended' " +
-                 "END AS CalcStatus " +
-                 "FROM event " +
-                 "WHERE EventStatus = ? " + 
-                 "ORDER BY " +
-                 "  CASE " +
-                 "    WHEN EventDate > CURDATE() THEN 1 " + // Upcoming first
-                 "    WHEN EventDate = CURDATE() THEN 2 " + // Ongoing second
-                 "    ELSE 3 " +                           // Ended last
-                 "  END, " +
-                 "  EventDate DESC"; // Furthest future date at the very top
+        List<Event> events = new ArrayList<>();
+        // 1. Calculate the dynamic status (Upcoming, Ongoing, Ended)
+        // 2. Sort: Future (Furthest first) -> Ongoing -> Past
+        String sql = "SELECT *, " +
+                     "CASE " +
+                     "  WHEN EventDate > CURDATE() THEN 'Upcoming' " +
+                     "  WHEN EventDate = CURDATE() THEN 'Ongoing' " +
+                     "  ELSE 'Ended' " +
+                     "END AS CalcStatus " +
+                     "FROM event " +
+                     "WHERE EventStatus = ? " + 
+                     "ORDER BY " +
+                     "  CASE " +
+                     "    WHEN EventDate > CURDATE() THEN 1 " + // Upcoming first
+                     "    WHEN EventDate = CURDATE() THEN 2 " + // Ongoing second
+                     "    ELSE 3 " +                           // Ended last
+                     "  END, " +
+                     "  EventDate DESC"; // Furthest future date at the very top
 
-    try (Connection conn = DBConnection.getConnection();
-         PreparedStatement ps = conn.prepareStatement(sql)) {
-        
-        ps.setString(1, status);
-        try (ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                Event event = new Event();
-                event.setEventId(rs.getInt("EventID"));
-                event.setEventName(rs.getString("EventName"));
-                event.setEventDate(rs.getDate("EventDate"));
-                // Set the status to our calculated value for the UI cards
-                event.setEventStatus(rs.getString("CalcStatus")); 
-                events.add(event);
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, status);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Event event = new Event();
+                    event.setEventId(rs.getInt("EventID"));
+                    event.setEventName(rs.getString("EventName"));
+                    event.setEventDate(rs.getDate("EventDate"));
+                    // Set the status to our calculated value for the UI cards
+                    event.setEventStatus(rs.getString("CalcStatus")); 
+                    events.add(event);
+                }
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
+        return events;
     }
-    return events;
-}
     /**
      * Get upcoming events
      */

@@ -5,6 +5,7 @@
 --%>
 
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -28,8 +29,23 @@
             <input type="password" name="password" placeholder="Password" required>
             <input type="email" name="email" placeholder="Email" required>
             <input type="text" name="phone" placeholder="Phone Number" required>
-            <input type="number" name="club_id" placeholder="Club ID" required>
-            <input type="number" name="faculty_id" placeholder="Faculty ID" required>
+            <input type="semester" name="semester" placeholder="Semester" required>
+            <div class="input-group">
+                <select name="clubID" required>
+                    <option value="" disabled selected>Select Club</option>
+                    <c:forEach var="c" items="${clubList}">
+                        <option value="${c.clubId}">${c.clubName}</option>
+                    </c:forEach>
+                </select>
+            </div>
+            <div class="input-group">
+                <select name="facultyID" required>
+                    <option value="" disabled selected>Select Faculty</option>
+                    <c:forEach var="f" items="${facultyList}">
+                        <option value="${f.facultyID}">${f.facultyName}</option>
+                    </c:forEach>
+                </select>
+            </div>
             <button type="submit">REGISTER</button>
         </form>
         <p><a href="login.jsp" style="font-size: 0.8rem;">Back to Login</a></p>

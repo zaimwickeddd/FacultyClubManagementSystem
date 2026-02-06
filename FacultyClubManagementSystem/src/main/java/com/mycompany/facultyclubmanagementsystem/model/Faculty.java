@@ -10,7 +10,7 @@ import java.sql.Timestamp;
  */
 public class Faculty {
     
-    private int facultyId;
+    private int facultyID;
     private String facultyName;
     private Timestamp createdAt;
     private Timestamp updatedAt;
@@ -19,18 +19,18 @@ public class Faculty {
     public Faculty() {
     }
     
-    public Faculty(int facultyId, String facultyName) {
-        this.facultyId = facultyId;
+    public Faculty(int facultyID, String facultyName) {
+        this.facultyID = facultyID;
         this.facultyName = facultyName;
     }
     
     // Getters and Setters
-    public int getFacultyId() {
-        return facultyId;
+    public int getFacultyID() {
+        return facultyID;
     }
     
-    public void setFacultyId(int facultyId) {
-        this.facultyId = facultyId;
+    public void setFacultyID(int facultyID) {
+        this.facultyID = facultyID;
     }
     
     public String getFacultyName() {
@@ -60,7 +60,7 @@ public class Faculty {
     @Override
     public String toString() {
         return "Faculty{" +
-                "facultyId=" + facultyId +
+                "facultyId=" + facultyID +
                 ", facultyName='" + facultyName + '\'' +
                 '}';
     }

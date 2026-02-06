@@ -94,8 +94,9 @@ public class authController extends HttpServlet {
         String password = request.getParameter("password");
         String email = request.getParameter("email");
         String phone = request.getParameter("phone");
-        String clubIdStr = request.getParameter("club_id");
-        String facultyIdStr = request.getParameter("faculty_id");
+        String semesterStr = request.getParameter("semester");   
+        String facultyIdStr = request.getParameter("facultyID"); 
+        String clubIdStr = request.getParameter("clubID");
         
         if (username == null || password == null || email == null) {
             response.sendRedirect("register.jsp?error=missing_fields");
@@ -117,10 +118,17 @@ public class authController extends HttpServlet {
         newUser.setUserRole("Student"); // Default registration level
         
         try {
-            if (clubIdStr != null) newUser.setClubId(Integer.parseInt(clubIdStr));
-            if (facultyIdStr != null) newUser.setFacultyId(Integer.parseInt(facultyIdStr));
+            if (semesterStr != null && !semesterStr.isEmpty()) {
+                newUser.setUserSemester(Integer.parseInt(semesterStr));
+            }
+            if (facultyIdStr != null && !facultyIdStr.isEmpty()) {
+                newUser.setFacultyId(Integer.parseInt(facultyIdStr));
+            }
+            if (clubIdStr != null && !clubIdStr.isEmpty()) {
+                newUser.setClubId(Integer.parseInt(clubIdStr));
+            }
         } catch (NumberFormatException e) {
-            // Log and ignore invalid numeric inputs
+            e.printStackTrace(); // Helpful for debugging in NetBeans
         }
         
         boolean success = userDAO.create(newUser);

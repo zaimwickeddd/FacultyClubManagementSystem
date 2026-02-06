@@ -28,7 +28,7 @@
             <input type="password" name="password" placeholder="Password" required>
             <button type="submit" class="btn">LOG IN</button>
         </form>
-        <a href="register.jsp" class="footer-link">No account? Create one here</a>
+        <a href="RegisterLoadController" class="footer-link">No account? Create one here</a>
     </div>
 </body>
 </html>
