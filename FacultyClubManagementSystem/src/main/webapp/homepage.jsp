@@ -165,7 +165,7 @@
                     <span class="event-date">${event.eventDate}</span>
                 </div>
             </c:forEach>
-            <a href="eventList.jsp" class="btn-view" style="margin-top:auto;">ALL EVENTS</a>
+            <a href="eventListController" class="btn-view" style="margin-top:auto;">ALL EVENTS</a>
         </div>
 
         <%-- SECTION 3: STATUS (Shared/Contextual) --%>

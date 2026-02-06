@@ -61,6 +61,11 @@
             border-radius: 15px;
             border: 2px solid #000;
             transition: transform 0.2s;
+            
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 350px;
         }
         
         .event-card:hover {
@@ -192,40 +197,51 @@
                             <h3 class="event-title">${event.eventName}</h3>
                             <div class="status-badge">${event.eventStatus}</div>
                         </div>
-                        
+
+                        <%-- FILL THIS PART WITH EVENT DETAILS --%>
                         <div class="event-details">
                             <div class="event-detail-row">
                                 <i class="fas fa-calendar"></i>
                                 <span>${event.eventDate}</span>
                             </div>
-                            
                             <div class="event-detail-row">
                                 <i class="fas fa-clock"></i>
                                 <span>${event.eventTime}</span>
                             </div>
-                            
                             <div class="event-detail-row">
                                 <i class="fas fa-map-marker-alt"></i>
                                 <span>${event.eventVenue}</span>
                             </div>
-                            
-                            <c:if test="${not empty event.maxParticipants}">
-                                <div class="event-detail-row">
-                                    <i class="fas fa-users"></i>
-                                    <span>Max: ${event.maxParticipants} participants</span>
-                                </div>
-                            </c:if>
-                            
                             <div class="event-detail-row">
                                 <i class="fas fa-user-check"></i>
                                 <span>Attendance: ${event.eventAttendance}</span>
                             </div>
                         </div>
-                        
+
                         <c:if test="${not empty event.eventDescription}">
                             <div class="event-description">
                                 <strong>Description:</strong><br>
                                 ${event.eventDescription}
+                            </div>
+                        </c:if>
+
+                        <c:if test="${sessionScope.userRole == 'Student'}">
+                            <div class="event-actions" style="margin-top: 15px; text-align: center;">
+                                <form action="RegisterEventServlet" method="POST">
+                                    <input type="hidden" name="eventId" value="${event.eventId}">
+                                    <button type="submit" class="btn-register" style="
+                                        background-color: var(--accent-pink);
+                                        color: black;
+                                        padding: 10px 20px;
+                                        border: 2px solid #000;
+                                        border-radius: 10px;
+                                        font-weight: bold;
+                                        width: 100%;
+                                        cursor: pointer;
+                                        text-decoration: none;">
+                                        Register for Event
+                                    </button>
+                                </form>
                             </div>
                         </c:if>
                     </div>
@@ -246,57 +262,63 @@
     </c:choose>
     
     <%-- SECTION: Approved and Rejected (Only Members and Advisors) --%>
+    <%-- Updated Structure for Side-by-Side View --%>
     <c:if test="${sessionScope.userRole == 'Member' || sessionScope.userRole == 'Advisor'}">
-        
-        <hr style="margin: 50px 0; border: 1px solid rgba(0,0,0,0.1);">
-        
-        <h2 style="color: var(--approve-green);"><i class="fas fa-check-circle"></i> Approved Events</h2>
-        <c:choose>
-            <c:when test="${not empty approvedEvents}">
-                <div class="event-grid">
-                    <c:forEach var="event" items="${approvedEvents}">
-                        <div class="event-card" style="border-left: 10px solid var(--approve-green);">
-                            <div class="event-header">
-                                <h3 class="event-title">${event.eventName}</h3>
-                                <div class="status-badge" style="border-color: var(--approve-green); color: var(--approve-green);">
-                                    ${event.eventStatus}
-                                </div>
-                            </div>
-                            <div class="event-details">
-                                <div class="event-detail-row"><i class="fas fa-calendar"></i> <span>${event.eventDate}</span></div>
-                                <div class="event-detail-row"><i class="fas fa-map-marker-alt"></i> <span>${event.eventVenue}</span></div>
-                            </div>
-                        </div>
-                    </c:forEach>
-                </div>
-            </c:when>
-            <c:otherwise><p class="subtitle">No approved events yet.</p></c:otherwise>
-        </c:choose>
+        <hr style="margin: 50px 0;">
 
-        <h2 style="color: var(--reject-red); margin-top: 40px;"><i class="fas fa-times-circle"></i> Rejected Events</h2>
-        <c:choose>
-            <c:when test="${not empty rejectedEvents}">
-                <div class="event-grid">
-                    <c:forEach var="event" items="${rejectedEvents}">
-                        <div class="event-card" style="border-left: 10px solid var(--reject-red); opacity: 0.8;">
-                            <div class="event-header">
-                                <h3 class="event-title">${event.eventName}</h3>
-                                <div class="status-badge" style="border-color: var(--reject-red); color: var(--reject-red);">
-                                    ${event.eventStatus}
+        <div class="row">
+            <div class="col-md-6">
+                <h2 style="color: var(--approve-green);"><i class="fas fa-check-circle"></i> Approved Events</h2>
+                <c:choose>
+                    <c:when test="${not empty approvedEvents}">
+                        <div class="event-grid">
+                            <c:forEach var="event" items="${approvedEvents}">
+                                <div class="event-card" style="border-left: 10px solid var(--approve-green);">
+                                    <div class="event-header">
+                                        <h3 class="event-title">${event.eventName}</h3>
+                                        <div class="status-badge" style="border-color: var(--approve-green); color: var(--approve-green);">
+                                            ${event.eventStatus}
+                                        </div>
+                                    </div>
+                                    <div class="event-details">
+                                        <div class="event-detail-row"><i class="fas fa-calendar"></i> <span>${event.eventDate}</span></div>
+                                        <div class="event-detail-row"><i class="fas fa-map-marker-alt"></i> <span>${event.eventVenue}</span></div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="event-details">
-                                <div class="event-detail-row"><i class="fas fa-calendar"></i> <span>${event.eventDate}</span></div>
-                                <div class="event-detail-row"><i class="fas fa-ban"></i> <span>This event was rejected</span></div>
-                            </div>
+                            </c:forEach>
                         </div>
-                    </c:forEach>
-                </div>
-            </c:when>
-            <c:otherwise><p class="subtitle">No rejected events recorded.</p></c:otherwise>
-        </c:choose>
+                    </c:when>
+                    <c:otherwise><p class="subtitle">No approved events yet.</p></c:otherwise>
+                </c:choose>
+            </div>
 
+            <div class="col-md-6">
+                <h2 style="color: var(--reject-red);"><i class="fas fa-times-circle"></i> Rejected Events</h2>
+                <c:choose>
+                    <c:when test="${not empty rejectedEvents}">
+                        <div class="event-grid">
+                            <c:forEach var="event" items="${rejectedEvents}">
+                                <div class="event-card" style="border-left: 10px solid var(--reject-red); opacity: 0.8;">
+                                    <div class="event-header">
+                                        <h3 class="event-title">${event.eventName}</h3>
+                                        <div class="status-badge" style="border-color: var(--reject-red); color: var(--reject-red);">
+                                            ${event.eventStatus}
+                                        </div>
+                                    </div>
+                                    <div class="event-details">
+                                        <div class="event-detail-row"><i class="fas fa-calendar"></i> <span>${event.eventDate}</span></div>
+                                        <div class="event-detail-row"><i class="fas fa-ban"></i> <span>This event was rejected</span></div>
+                                    </div>
+                                </div>
+                            </c:forEach>
+                        </div>
+                    </c:when>
+                    <c:otherwise><p class="subtitle">No rejected events recorded.</p></c:otherwise>
+                </c:choose>
+            </div>
+        </div>
     </c:if>
+    
 </div> <%-- End of Container --%>
 </div>
 
