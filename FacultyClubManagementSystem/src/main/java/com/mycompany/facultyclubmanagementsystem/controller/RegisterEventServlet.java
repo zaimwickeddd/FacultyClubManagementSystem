@@ -37,7 +37,7 @@ public class RegisterEventServlet extends HttpServlet {
         HttpSession session = request.getSession();
         
         // 1. Get UserID from Session (ensure you stored this during login)
-        Integer userId = (Integer) session.getAttribute("userID");
+        Integer userId = (Integer) session.getAttribute("userId");
         
         // 2. Get EventID from Form
         String eventIdStr = request.getParameter("eventId");
@@ -53,8 +53,9 @@ public class RegisterEventServlet extends HttpServlet {
         try {
             conn = DBConnection.getConnection();
             
-            // 3. Insert into database
-            String sql = "INSERT INTO eventregistration (UserID, EventID, RegistrationDate) VALUES (?, ?, NOW())";
+            // 3. Insert into database using your table structure
+            // Defaulting RegisStatus to 'PENDING'
+            String sql = "INSERT INTO eventregistration (UserID, EventID, RegisDate, RegisStatus) VALUES (?, ?, NOW(), 'PENDING')";
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, userId);
             ps.setInt(2, eventId);

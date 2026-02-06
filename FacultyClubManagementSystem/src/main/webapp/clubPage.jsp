@@ -4,7 +4,9 @@
     Author     : Muhamad Zulhairie
 --%>
 
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ include file="header.jsp" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -49,18 +51,6 @@
             color: #000;
             font-weight: 600;
         }
-
-        .nav-item.active { background-color: var(--accent-pink); }
-
-        .user-profile { text-align: right; }
-        .logout-link { color: red; text-decoration: none; font-weight: bold; font-size: 12px; }
-        
-        .container { background-color: white; margin: 20px auto; width: 80%; padding: 20px; border-radius: 15px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
-        .box { border: 2px solid #555; border-radius: 10px; padding: 40px 10px; text-align: center; font-weight: bold; min-height: 150px; }
-        .tall { grid-row: span 2; }
-        .btn-preview { background-color: #fff4bd; padding: 10px; width: 100%; border-radius: 10px; margin-bottom: 5px; cursor: pointer; }
-        .btn-print { background-color: #c4ffc4; padding: 10px; width: 100%; border-radius: 10px; cursor: pointer; }
-        
     </style>
 </head>
 <body>
@@ -71,25 +61,7 @@
         String userRole = (session.getAttribute("userRole") != null) ? (String)session.getAttribute("userRole") : " ";
     %>
 
-    <header class="navbar">
-        <div class="logo-section">
-            <img src="${pageContext.request.contextPath}/image/UiTM-Logo-removebg-preview.png" alt="UiTM Logo">
-        </div>
-        
-        <nav class="nav-links">
-            <a href="homepage.jsp" class="nav-item"><i class="fas fa-home"></i> Home</a>
-            <a href="eventList.jsp" class="nav-item"><i class="fas fa-calendar-alt"></i> Events</a>
-            <a href="clubPage.jsp" class="nav-item active"><i class="fas fa-star"></i> Clubs</a>
-        </nav>
-
-        <div class="user-profile">
-            <div><i class="fas fa-user-circle fa-2x"></i></div>
-            <strong><%= userName %></strong><br>
-            <small>(<%= userRole %>)</small><br>
-            <a href="Logout.jsp" class="logout-link">LOGOUT</a>
-        </div>
-    </header>
-
+   
     <h2 style="color:gray; margin-left:10%;">CREATE REPORT: ${club.facultyName}</h2>
 
     <div class="container">
@@ -108,3 +80,4 @@
 
 </body>
 </html>
+<%@ include file="footer.jsp" %>

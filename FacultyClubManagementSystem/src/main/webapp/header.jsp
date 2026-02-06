@@ -122,6 +122,12 @@
             </a>
         <% } %>
         
+        <% if ("Student".equals(session.getAttribute("userRole"))) { %>
+            <a href="RegisteredEventsServlet" class="nav-item">
+                <i class="fas fa-bookmark"></i> My Registrations
+            </a>
+        <% } %>
+        
     </nav>
 
     <div class="user-profile">

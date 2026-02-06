@@ -4,8 +4,9 @@
     Author     : Anderson Giggs
 --%>
 
-<%@ include file="header.jsp" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ include file="header.jsp" %>
 
 <head>
     <title>All Events | UiTM</title>
@@ -16,6 +17,7 @@
             --accent-pink: #ff99f1; 
             --approve-green: #28a745; 
             --reject-red: #dc3545; 
+            --disabled-gray: #6c757d; /* ADDED */
         }
         
         body { 
@@ -157,6 +159,36 @@
             margin-bottom: 20px;
             font-size: 0.95rem;
         }
+
+        /* ADDED FOR REGISTRATION BUTTONS */
+        .btn-register {
+            padding: 10px 20px;
+            border: 2px solid #000;
+            border-radius: 10px;
+            font-weight: bold;
+            width: 100%;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .btn-register-active {
+            background-color: var(--accent-pink);
+            color: black;
+        }
+
+        .btn-register-active:hover {
+            background-color: #ff66e0;
+        }
+
+        .btn-register-disabled {
+            background-color: var(--disabled-gray);
+            color: white;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
     </style>
 </head>
 <body>
@@ -225,23 +257,28 @@
                             </div>
                         </c:if>
 
+                        <%-- MODIFIED ACTION BUTTONS FOR STUDENTS --%>
                         <c:if test="${sessionScope.userRole == 'Student'}">
                             <div class="event-actions" style="margin-top: 15px; text-align: center;">
-                                <form action="RegisterEventServlet" method="POST">
-                                    <input type="hidden" name="eventId" value="${event.eventId}">
-                                    <button type="submit" class="btn-register" style="
-                                        background-color: var(--accent-pink);
-                                        color: black;
-                                        padding: 10px 20px;
-                                        border: 2px solid #000;
-                                        border-radius: 10px;
-                                        font-weight: bold;
-                                        width: 100%;
-                                        cursor: pointer;
-                                        text-decoration: none;">
-                                        Register for Event
-                                    </button>
-                                </form>
+                                
+                                <%-- CHECK IF ALREADY REGISTERED USING REGISTEREDEVENTIDS LIST --%>
+                                <c:choose>
+                                    <c:when test="${registeredEventIds.contains(event.eventId)}">
+                                        <%-- Disabled Button --%>
+                                        <button class="btn-register btn-register-disabled" disabled>
+                                            <i class="fas fa-check"></i> Already Registered
+                                        </button>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <%-- Active Register Form --%>
+                                        <form action="RegisterEventServlet" method="POST">
+                                            <input type="hidden" name="eventId" value="${event.eventId}">
+                                            <button type="submit" class="btn-register btn-register-active">
+                                                Register for Event
+                                            </button>
+                                        </form>
+                                    </c:otherwise>
+                                </c:choose>
                             </div>
                         </c:if>
                     </div>
