@@ -20,7 +20,7 @@
             font-family: 'Inter', sans-serif; 
             background-color: var(--bg-pink); 
             margin: 0; 
-            padding: 20px; 
+            padding: 0; 
         }
         
         .form-container { 
