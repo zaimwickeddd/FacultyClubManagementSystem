@@ -408,22 +408,31 @@ public class EventDAO {
      * Get Approved events filtered by ClubID
      */
     public List<Event> findApprovedByClub(int clubId) {
+
         List<Event> events = new ArrayList<>();
-        String sql = "SELECT * FROM event WHERE ClubID = ? AND EventStatus = 'Approved' ORDER BY EventDate DESC";
-        
+
+        String sql =
+            "SELECT e.* " +
+            "FROM event e " +
+            "JOIN clubeventapplication c ON e.CEAppID = c.CEAppID " +
+            "WHERE c.ClubID = ? " +
+            "AND c.CEAppStatus = 'Approved' " +
+            "ORDER BY e.EventDate DESC";
+
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            
+
             ps.setInt(1, clubId);
-            
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    events.add(mapResultSetToEvent(rs));
-                }
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                events.add(mapResultSetToEvent(rs));
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         return events;
     }
 
