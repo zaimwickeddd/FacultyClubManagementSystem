@@ -2,13 +2,15 @@ package com.mycompany.facultyclubmanagementsystem.controller;
 
 import com.mycompany.facultyclubmanagementsystem.dao.EventDAO;
 import com.mycompany.facultyclubmanagementsystem.model.Event;
+import com.mycompany.facultyclubmanagementsystem.util.DBConnection;
+
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.ArrayList; 
-import java.sql.Connection; 
-import java.sql.PreparedStatement; 
-import java.sql.ResultSet; 
-import com.mycompany.facultyclubmanagementsystem.util.DBConnection; 
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -18,46 +20,46 @@ import jakarta.servlet.http.HttpSession;
 
 @WebServlet("/eventListController")
 public class eventListController extends HttpServlet {
-    
+
     private EventDAO eventDAO = new EventDAO();
-    
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        HttpSession session = request.getSession();
-        String userRole = (String) session.getAttribute("userRole");
-        Integer userId = (Integer) session.getAttribute("userId");
-        // 1. Get ClubID from session (Ensure this is set during login)
-        Integer clubId = (Integer) session.getAttribute("clubId"); 
+        HttpSession session = request.getSession(false);
 
-        if (userRole == null) {
+        // Safety check: user not logged in
+        if (session == null || session.getAttribute("userRole") == null) {
             response.sendRedirect("login.jsp");
             return;
         }
 
+        String userRole = (String) session.getAttribute("userRole");
+        Integer userId = (Integer) session.getAttribute("userId");
+        Integer clubId = (Integer) session.getAttribute("clubId");
+
         try {
-            List<Event> filteredEvents = new ArrayList<>();
-            
-            // 2. Filter events by ClubID
+
+            // 1. Load events for club safely
             if (clubId != null) {
-                // Assuming you update EventDAO to have a method: findByClub(int clubId)
-                // For now, using a hypothetical method to demonstrate logic
-                filteredEvents = eventDAO.findEventsByClub(clubId);
+                List<Event> events = eventDAO.findEventsByClub(clubId);
+                request.setAttribute("events", events);
+            } else {
+                request.setAttribute("events", new ArrayList<>());
+                request.setAttribute("errorMessage", "No club assigned to this user.");
             }
-            
-            request.setAttribute("events", filteredEvents);
 
-            // --- Logic for student registration restriction (unchanged) ---
-            List<Integer> registeredEventIds = new ArrayList<>();
+            // 2. Student registration restriction
             if ("Student".equals(userRole) && userId != null) {
-                // ... (rest of registration logic) ...
+                List<Integer> registeredEventIds = getRegisteredEvents(userId);
+                request.setAttribute("registeredEventIds", registeredEventIds);
             }
-            request.setAttribute("registeredEventIds", registeredEventIds);
 
-            // Members and Advisors might need to see only their club's status
-            if ("Member".equals(userRole) || "Advisor".equals(userRole)) {
-                // Assuming similar filtering for approved/rejected
+            // 3. Approved & Rejected events for Member / Advisor
+            if (clubId != null &&
+                ("Member".equals(userRole) || "Advisor".equals(userRole))) {
+
                 List<Event> approvedEvents = eventDAO.findApprovedByClub(clubId);
                 List<Event> rejectedEvents = eventDAO.findRejectedByClub(clubId);
 
@@ -72,5 +74,27 @@ public class eventListController extends HttpServlet {
             request.setAttribute("errorMessage", "Error loading events: " + e.getMessage());
             request.getRequestDispatcher("eventList.jsp").forward(request, response);
         }
+    }
+
+    // Helper method (cleaner separation of DB logic)
+    private List<Integer> getRegisteredEvents(Integer userId) {
+        List<Integer> registeredEventIds = new ArrayList<>();
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(
+                     "SELECT EventID FROM eventregistration WHERE UserID = ?")) {
+
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                registeredEventIds.add(rs.getInt("EventID"));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return registeredEventIds;
     }
 }

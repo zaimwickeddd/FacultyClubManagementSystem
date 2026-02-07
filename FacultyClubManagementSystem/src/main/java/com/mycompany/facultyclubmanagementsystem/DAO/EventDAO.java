@@ -386,6 +386,9 @@ public class EventDAO {
         int maxParticipants = rs.getInt("MaxParticipants");
         event.setMaxParticipants(rs.wasNull() ? null : maxParticipants);
         */
+               
+        int clubId = rs.getInt("ClubID");
+        event.setClubId(rs.wasNull() ? null : clubId);
         
         int ceAppId = rs.getInt("CEAppID");
         event.setCeAppId(rs.wasNull() ? null : ceAppId);
