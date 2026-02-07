@@ -3,10 +3,9 @@
     Modified on : 31 Jan 2026, 11:45:00 pm
     Author     : Anderson Giggs
 --%>
-
+<%@ include file="header.jsp" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ include file="header.jsp" %>
 
 <head>
     <title>All Events | UiTM</title>
@@ -24,7 +23,7 @@
             font-family: 'Inter', sans-serif; 
             background-color: var(--bg-pink); 
             margin: 0; 
-            padding: 20px; 
+            padding: 0; 
         }
         
         .container { 
