@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors; // Added for filtering
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -43,8 +44,22 @@ public class eventListController extends HttpServlet {
 
             // 1. Load events for club safely
             if (clubId != null) {
-                List<Event> events = eventDAO.findEventsByClub(clubId);
-                request.setAttribute("events", events);
+                List<Event> allEvents = eventDAO.findEventsByClub(clubId);
+                List<Event> filteredEvents;
+
+                // --- MODIFIED LOGIC START ---
+                if ("Student".equals(userRole)) {
+                    // Filter out 'Rejected' events for Students
+                    filteredEvents = allEvents.stream()
+                            .filter(e -> !"Rejected".equals(e.getEventStatus()))
+                            .collect(Collectors.toList());
+                } else {
+                    // Members and Advisors see all events
+                    filteredEvents = allEvents;
+                }
+                // --- MODIFIED LOGIC END ---
+
+                request.setAttribute("events", filteredEvents);
             } else {
                 request.setAttribute("events", new ArrayList<>());
                 request.setAttribute("errorMessage", "No club assigned to this user.");
