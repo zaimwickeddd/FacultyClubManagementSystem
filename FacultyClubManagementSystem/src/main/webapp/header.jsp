@@ -109,12 +109,14 @@
             <i class="fas fa-star"></i> Clubs
         </a>
 
-        <%-- Role-based navigation for Member --%>
+        <%-- Role-based navigation for Member 
         <% if ("Member".equals(session.getAttribute("userRole"))) { %>
             <a href="addAdmin.jsp" class="nav-item">
                 <i class="fas fa-user-plus"></i> Add User
             </a>
         <% } %>
+        --%>
+        
         
         <% if ("Advisor".equals(session.getAttribute("userRole"))) { %>
             <a class="nav-item" href="advisorListApprovalController">
