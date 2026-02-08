@@ -134,34 +134,45 @@
     <main class="dashboard-container">
         
         <%-- SECTION 1: ROLE-SPECIFIC ACTIONS --%>
-        <section class="card">
-            <% if ("Advisor".equals(userRole)) { %>
-                <h2 class="card-title">Advisor Tools</h2>
-                <div class="club-info-box">
-                    <i class="fas fa-clipboard-check fa-3x" style="margin-bottom: 10px;"></i>
-                    <p>You have pending event applications to review.</p>
-                </div>
-                <a href="advisorListApprovalController" class="btn-action">REVIEW APPLICATIONS</a>
-            <% } else if ("Member".equals(userRole)) { %>
-                <h2 class="card-title">Member Tools</h2>
-                <div class="club-info-box">
-                    <i class="fas fa-calendar-plus fa-3x" style="margin-bottom: 10px;"></i>
-                    <p>Organize a new club activity.</p>
-                </div>
-                <a href="createEvent.jsp" class="btn-action">UPLOAD NEW EVENT</a>
-            <% } else { %>
-                <h2 class="card-title">My Club Card</h2>
-                <div class="club-info-box">
-                    <div class="club-logo">
-                        <img src="${pageContext.request.contextPath}/image/compass_logo.png" alt="Logo" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover;">
+        <%-- SECTION 1: ROLE-SPECIFIC ACTIONS --%>
+<section class="card">
+            <c:choose>
+                <c:when test="${sessionScope.userRole == 'Advisor'}">
+                    <h2 class="card-title">Advisor Tools</h2>
+                    <div class="club-info-box">
+                        <i class="fas fa-clipboard-check fa-3x" style="margin-bottom: 10px; color: white;"></i>
+                        <p>You have pending event applications to review.</p>
                     </div>
-                    <h3>COMPASS</h3>
-                    <p>Student Member</p>
-                </div>
-                <button class="btn-view" onclick="window.location.href='profile.jsp'">
-                    VIEW PROFILE
-                </button>
-            <% } %>
+                    <a href="advisorListApprovalController" class="btn-action">REVIEW APPLICATIONS</a>
+                </c:when>
+                
+                <c:when test="${sessionScope.userRole == 'Member'}">
+                    <h2 class="card-title">Member Tools</h2>
+                    <div class="club-info-box">
+                        <i class="fas fa-calendar-plus fa-3x" style="margin-bottom: 10px; color: white;"></i>
+                        <p>Organize a new club activity.</p>
+                    </div>
+                    <a href="createEvent.jsp" class="btn-action">UPLOAD NEW EVENT</a>
+                </c:when>
+                
+                <c:otherwise>
+                    <%-- STUDENT / DEFAULT VIEW WITH DYNAMIC LOGO --%>
+                    <h2 class="card-title">My Club Card</h2>
+                    <div class="club-info-box">
+                        <div class="club-logo">
+                            <img src="${not empty sessionScope.currentClubLogo ? sessionScope.currentClubLogo : 'image/UiTM-Logo.jpg'}" 
+                                 alt="Club Logo">
+                        </div>
+                        <h3 style="text-transform: uppercase; margin: 10px 0;">
+                            ${not empty sessionScope.currentClubName ? sessionScope.currentClubName : 'Club Name'}
+                        </h3>
+                        <p style="margin: 0; font-size: 0.9rem; opacity: 0.8;">${sessionScope.userRole}</p>
+                    </div>
+                    <button class="btn-view" onclick="window.location.href='profile.jsp'">
+                        VIEW PROFILE
+                    </button>
+                </c:otherwise>
+            </c:choose>
         </section>
 
         <%-- SECTION 2: UPCOMING EVENTS (Shared) --%>

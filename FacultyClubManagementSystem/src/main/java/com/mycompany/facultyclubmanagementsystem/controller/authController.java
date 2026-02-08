@@ -1,5 +1,7 @@
 package com.mycompany.facultyclubmanagementsystem.controller;
 
+import com.mycompany.facultyclubmanagementsystem.dao.ClubDAO;
+import com.mycompany.facultyclubmanagementsystem.model.Club;
 import com.mycompany.facultyclubmanagementsystem.dao.UserDAO;
 import com.mycompany.facultyclubmanagementsystem.model.User;
 import com.mycompany.facultyclubmanagementsystem.dao.EventDAO;
@@ -19,6 +21,7 @@ import jakarta.servlet.http.*;
 public class authController extends HttpServlet {
     
     private UserDAO userDAO = new UserDAO();
+    private ClubDAO clubDAO = new ClubDAO();
     
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
@@ -69,6 +72,31 @@ public class authController extends HttpServlet {
             session.setAttribute("facultyId", user.getFacultyId());
             session.setAttribute("userPhone", user.getUserPhone());
             session.setAttribute("userSemester", user.getUserSemester());
+            
+            Integer cId = user.getClubId();
+    if (cId != null && cId > 0) {
+        Club club = clubDAO.findById(cId);
+        if (club != null) {
+            session.setAttribute("currentClubName", club.getClubName());
+            
+            String logo;
+            switch(cId) {
+                case 1: // COMPASS
+                    logo = "image/compass_logo.png"; 
+                    break;
+                case 2: // MASPENA
+                    logo = "image/maspena.jpg";
+                    break;
+                case 3: // BASIS
+                    logo = "image/basis.png";
+                    break;
+                default:
+                    logo = "image/UiTM-Logo.jpg";
+                    break;
+            }
+            session.setAttribute("currentClubLogo", logo);
+        }
+    }
             
             EventDAO eventDAO = new EventDAO();
             List<Event> upcoming = eventDAO.findUpcomingEvents();

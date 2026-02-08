@@ -209,8 +209,8 @@ public class ClubDAO {
         // For joined query
         club.setFacultyName(rs.getString("FacultyName"));
         
-        club.setCreatedAt(rs.getTimestamp("created_at"));
-        club.setUpdatedAt(rs.getTimestamp("updated_at"));
+        //club.setCreatedAt(rs.getTimestamp("created_at"));
+        //club.setUpdatedAt(rs.getTimestamp("updated_at"));
         
         return club;
     }
