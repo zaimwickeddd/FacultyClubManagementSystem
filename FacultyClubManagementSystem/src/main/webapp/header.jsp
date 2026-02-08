@@ -144,7 +144,7 @@
                 (<%= session.getAttribute("userRole") %>)
             </small>
             
-            <a href="LogoutServlet" class="logout-link" style="margin-top: 5px;">LOGOUT</a>
+            <a href="Logout.jsp" class="logout-link" style="margin-top: 5px;">LOGOUT</a>
         </div>
     </a>
 </div>
