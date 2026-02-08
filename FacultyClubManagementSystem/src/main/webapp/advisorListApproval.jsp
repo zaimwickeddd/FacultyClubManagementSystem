@@ -73,8 +73,10 @@
                     <tr>
                         <th>ID</th>
                         <th>Event Name</th>
+                        <!--
                         <th>Category</th>
                         <th>Budget</th>
+                        -->
                         <th>Status</th>
                         <th>Action</th>
                     </tr>
@@ -84,8 +86,10 @@
                         <tr>
                             <td><strong>#${app.ceAppID}</strong></td>
                             <td>${app.eventName}</td>
+                            <!--
                             <td>${app.eventCategory}</td>
                             <td>RM ${app.eventBudget}</td>
+                            -->
                             <td>
                                 <c:choose>
                                     <c:when test="${app.ceAppStatus == 'Pending'}">

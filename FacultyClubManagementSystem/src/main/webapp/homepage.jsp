@@ -108,6 +108,14 @@
             text-transform: uppercase;
         }
         
+        .club-logo img {
+            width: 100px;           /* Set a specific size */
+            height: 100px;          /* Height MUST match width */
+            object-fit: cover;      /* Crops the image to fit the square without stretching */
+            border-radius: 50%;     /* Makes it a circle */
+            border: 2px solid #fff; /* Optional: adds a white border like your photo */
+        }
+        
 
         
         
@@ -133,7 +141,7 @@
                     <i class="fas fa-clipboard-check fa-3x" style="margin-bottom: 10px;"></i>
                     <p>You have pending event applications to review.</p>
                 </div>
-                <a href="approveEvents.jsp" class="btn-action">REVIEW APPLICATIONS</a>
+                <a href="advisorListApprovalController" class="btn-action">REVIEW APPLICATIONS</a>
             <% } else if ("Member".equals(userRole)) { %>
                 <h2 class="card-title">Member Tools</h2>
                 <div class="club-info-box">
@@ -145,7 +153,7 @@
                 <h2 class="card-title">My Club Card</h2>
                 <div class="club-info-box">
                     <div class="club-logo">
-                        <img src="compass_logo.png" alt="Logo" style="width: 80%;">
+                        <img src="${pageContext.request.contextPath}/image/compass_logo.png" alt="Logo" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover;">
                     </div>
                     <h3>COMPASS</h3>
                     <p>Student Member</p>

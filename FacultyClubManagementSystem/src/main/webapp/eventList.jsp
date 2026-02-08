@@ -253,10 +253,12 @@
                                 <i class="fas fa-map-marker-alt"></i>
                                 <span>${event.eventVenue}</span>
                             </div>
+                           <!--
                             <div class="event-detail-row">
                                 <i class="fas fa-user-check"></i>
                                 <span>Attendance: ${event.eventAttendance}</span>
                             </div>
+                           -->
                         </div>
 
                         <c:if test="${not empty event.eventDescription}">
