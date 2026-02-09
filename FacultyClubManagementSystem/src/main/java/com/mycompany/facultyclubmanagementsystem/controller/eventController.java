@@ -74,7 +74,7 @@ public class eventController extends HttpServlet {
             psEvent.executeUpdate();
 
             conn.commit(); 
-            response.sendRedirect("eventListController?success=1");
+            response.sendRedirect("createEvent.jsp?sentToAdvisor=true");
 
         } catch (Exception e) {
             if (conn != null) try { conn.rollback(); } catch (Exception ex) {}

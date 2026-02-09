@@ -41,48 +41,42 @@ public class eventListController extends HttpServlet {
         Integer clubId = (Integer) session.getAttribute("clubId");
 
         try {
+        // 1. Load events safely
+        List<Event> allEvents;
 
-            // 1. Load events for club safely
+        if ("Student".equals(userRole)) {
+            // STUDENTS see ALL events from EVERY club
+            allEvents = eventDAO.findAll(); 
+
+            // Filter out 'Rejected' events for Students
+            List<Event> filteredEvents = allEvents.stream()
+                    .filter(e -> !"Rejected".equals(e.getEventStatus()))
+                    .collect(Collectors.toList());
+
+            request.setAttribute("events", filteredEvents);
+        } else {
+            // MEMBERS and ADVISORS still only see their OWN club events
             if (clubId != null) {
-                List<Event> allEvents = eventDAO.findEventsByClub(clubId);
-                List<Event> filteredEvents;
+                allEvents = eventDAO.findEventsByClub(clubId);
+                request.setAttribute("events", allEvents);
 
-                // --- MODIFIED LOGIC START ---
-                if ("Student".equals(userRole)) {
-                    // Filter out 'Rejected' events for Students
-                    filteredEvents = allEvents.stream()
-                            .filter(e -> !"Rejected".equals(e.getEventStatus()))
-                            .collect(Collectors.toList());
-                } else {
-                    // Members and Advisors see all events
-                    filteredEvents = allEvents;
-                }
-                // --- MODIFIED LOGIC END ---
-
-                request.setAttribute("events", filteredEvents);
-            } else {
-                request.setAttribute("events", new ArrayList<>());
-                request.setAttribute("errorMessage", "No club assigned to this user.");
-            }
-
-            // 2. Student registration restriction
-            if ("Student".equals(userRole) && userId != null) {
-                List<Integer> registeredEventIds = getRegisteredEvents(userId);
-                request.setAttribute("registeredEventIds", registeredEventIds);
-            }
-
-            // 3. Approved & Rejected events for Member / Advisor
-            if (clubId != null &&
-                ("Member".equals(userRole) || "Advisor".equals(userRole))) {
-
+                // 3. Approved & Rejected events for Member / Advisor ONLY
                 List<Event> approvedEvents = eventDAO.findApprovedByClub(clubId);
                 List<Event> rejectedEvents = eventDAO.findRejectedByClub(clubId);
-
                 request.setAttribute("approvedEvents", approvedEvents);
                 request.setAttribute("rejectedEvents", rejectedEvents);
+            } else {
+                request.setAttribute("events", new ArrayList<>());
             }
+        }
 
-            request.getRequestDispatcher("eventList.jsp").forward(request, response);
+        // 2. Student registration restriction (Keep this as is)
+        if ("Student".equals(userRole) && userId != null) {
+            List<Integer> registeredEventIds = getRegisteredEvents(userId);
+            request.setAttribute("registeredEventIds", registeredEventIds);
+        }
+
+        request.getRequestDispatcher("eventList.jsp").forward(request, response);
 
         } catch (Exception e) {
             e.printStackTrace();

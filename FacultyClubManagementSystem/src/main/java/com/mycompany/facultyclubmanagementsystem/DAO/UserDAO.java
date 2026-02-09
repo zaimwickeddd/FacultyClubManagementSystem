@@ -103,4 +103,20 @@ public class UserDAO {
         } catch (SQLException e) { e.printStackTrace(); }
         return users;
     }
+    
+    public boolean updateProfile(int userId, String email, String phone) {
+        String sql = "UPDATE user SET UserEmail = ?, UserPhone = ? WHERE UserID = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, email);
+            ps.setString(2, phone);
+            ps.setInt(3, userId);
+
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

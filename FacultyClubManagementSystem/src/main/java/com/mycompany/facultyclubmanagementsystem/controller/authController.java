@@ -66,7 +66,8 @@ public class authController extends HttpServlet {
             // 3. Setup Session
             HttpSession session = request.getSession();
             session.setAttribute("userId", user.getUserId());
-            session.setAttribute("username", user.getUserName());
+            session.setAttribute("userName", user.getUserName());
+            session.setAttribute("userEmail", user.getUserEmail());
             session.setAttribute("userRole", user.getUserRole()); // 'Student', 'Member', or 'Advisor'
             session.setAttribute("clubId", user.getClubId());
             session.setAttribute("facultyId", user.getFacultyId());

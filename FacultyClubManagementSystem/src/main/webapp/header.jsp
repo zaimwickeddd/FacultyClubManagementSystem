@@ -9,7 +9,8 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1"> <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1"> 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -66,20 +67,6 @@
             padding-left: 15px;
         }
 
-        .user-info {
-            text-align: right;
-        }
-
-        .user-info strong {
-            display: block;
-            font-size: 0.95rem;
-        }
-
-        .user-info small {
-            color: #666;
-            font-size: 0.85rem;
-        }
-
         .logout-link {
             color: #ff0000;
             font-weight: bold;
@@ -108,15 +95,6 @@
         <a href="clubPage.jsp" class="nav-item">
             <i class="fas fa-star"></i> Clubs
         </a>
-
-        <%-- Role-based navigation for Member 
-        <% if ("Member".equals(session.getAttribute("userRole"))) { %>
-            <a href="addAdmin.jsp" class="nav-item">
-                <i class="fas fa-user-plus"></i> Add User
-            </a>
-        <% } %>
-        --%>
-        
         
         <% if ("Advisor".equals(session.getAttribute("userRole"))) { %>
             <a class="nav-item" href="advisorListApprovalController">
@@ -129,23 +107,23 @@
                 <i class="fas fa-bookmark"></i> My Registrations
             </a>
         <% } %>
-        
     </nav>
 
     <div class="user-profile">
-    <a href="profile.jsp" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit;">
-        <i class="fas fa-user-circle fa-2x"></i>
-        
-        <div style="display: flex; flex-direction: column; text-align: left;">
-            <strong style="font-size: 1rem; line-height: 1.1;">
-                <%= session.getAttribute("username") %>
-            </strong>
-            <small style="color: #666; font-size: 0.85rem; line-height: 1.1;">
-                (<%= session.getAttribute("userRole") %>)
-            </small>
+        <a href="profile.jsp" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit;">
+            <i class="fas fa-user-circle fa-2x"></i>
             
-            <a href="Logout.jsp" class="logout-link" style="margin-top: 5px;">LOGOUT</a>
-        </div>
-    </a>
-</div>
+            <div style="display: flex; flex-direction: column; text-align: left;">
+                <strong style="font-size: 1rem; line-height: 1.1;">
+                    <%-- Fixed: Changed 'username' to 'userName' to match the Servlet attribute --%>
+                    <%= session.getAttribute("userName") != null ? session.getAttribute("userName") : "Guest" %>
+                </strong>
+                <small style="color: #666; font-size: 0.85rem; line-height: 1.1;">
+                    (<%= session.getAttribute("userRole") != null ? session.getAttribute("userRole") : "User" %>)
+                </small>
+                
+                <a href="Logout.jsp" class="logout-link" style="margin-top: 5px;">LOGOUT</a>
+            </div>
+        </a>
+    </div>
 </header>

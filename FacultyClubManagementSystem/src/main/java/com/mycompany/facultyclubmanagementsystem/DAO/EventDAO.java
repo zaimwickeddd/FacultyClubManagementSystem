@@ -492,5 +492,15 @@ public class EventDAO {
         }
         return events;
     }
-      
+      public boolean deleteApplication(int appID) {
+        String query = "DELETE FROM events WHERE ceAppID = ?"; // Ensure table/column names match your DB
+        try (Connection conn = DBConnection.getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, appID);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

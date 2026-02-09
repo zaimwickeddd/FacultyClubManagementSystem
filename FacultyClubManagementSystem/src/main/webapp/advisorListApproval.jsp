@@ -1,19 +1,23 @@
 <%-- 
     Document   : advisorListApproval
-    Created on : 6 Feb 2026, 1:22:58?am
     Author     : Muhamad Zulhairie
 --%>
 <%@ include file="header.jsp" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
+<!DOCTYPE html>
 <html>
 <head>
+    <title>Event Approvals | FCMS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         .approval-card {
             background: white;
             border-radius: 15px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             padding: 30px;
-            margin-top: 20px;
+            margin: 20px auto;
+            max-width: 1000px;
         }
         .table {
             width: 100%;
@@ -21,23 +25,21 @@
             border-spacing: 0 10px;
         }
         .table th {
-            border: none;
             color: #666;
             font-weight: 600;
             padding: 10px 20px;
+            text-align: left;
         }
         .table tr {
             background-color: #f8f9fa;
             transition: transform 0.2s;
         }
         .table tr:hover {
-            transform: scale(1.01);
+            transform: scale(1.005);
             background-color: #f1f1f1;
         }
-        .table td {
-            padding: 15px 20px;
-            border: none;
-        }
+        .table td { padding: 15px 20px; border: none; }
+        
         /* Status Badges */
         .badge {
             padding: 6px 12px;
@@ -55,41 +57,67 @@
             padding: 8px 15px;
             border-radius: 8px;
             cursor: pointer;
-            font-weight: 500;
+            font-weight: 600;
             transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
         }
         .btn-approve { background: #28a745; color: white; margin-right: 5px; }
         .btn-reject { background: #dc3545; color: white; }
-        .btn-action:hover { opacity: 0.8; }
+        
+        /* Delete Button Style */
+        .btn-delete { 
+            background: #fff; 
+            color: #dc3545; 
+            border: 2px solid #dc3545; 
+        }
+        .btn-delete:hover { 
+            background: #dc3545; 
+            color: white; 
+        }
+
+        .success-alert {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 5px solid #28a745;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="approval-card">
             <h2 style="margin-bottom: 25px; color: #333;">Event Application Approvals</h2>
+
+            <%-- Alert for successful deletion --%>
+            <c:if test="${param.deleteSuccess == 'true'}">
+                <div class="success-alert">
+                    <i class="fas fa-trash-alt"></i> Rejected application deleted successfully.
+                </div>
+            </c:if>
             
             <table class="table">
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>#</th> <%-- Changed from ID to a simple sequence header --%>
                         <th>Event Name</th>
-                        <!--
-                        <th>Category</th>
-                        <th>Budget</th>
-                        -->
                         <th>Status</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <c:forEach var="app" items="${applicationList}">
+                    <%-- Added varStatus="loop" to generate 1, 2, 3 sequence --%>
+                    <c:forEach var="app" items="${applicationList}" varStatus="loop">
                         <tr>
-                            <td><strong>#${app.ceAppID}</strong></td>
+                            <%-- Displays the sequence number based on loop index --%>
+                            <td><strong>#${loop.count}</strong></td>
+                            
                             <td>${app.eventName}</td>
-                            <!--
-                            <td>${app.eventCategory}</td>
-                            <td>RM ${app.eventBudget}</td>
-                            -->
                             <td>
                                 <c:choose>
                                     <c:when test="${app.ceAppStatus == 'Pending'}">
@@ -104,19 +132,49 @@
                                 </c:choose>
                             </td>
                             <td>
-                                <c:if test="${app.ceAppStatus == 'Pending'}">
-                                    <form action="approvalController" method="POST" style="margin:0;">
-                                        <input type="hidden" name="appID" value="${app.ceAppID}">
-                                        <button type="submit" name="action" value="Approved" class="btn-action btn-approve">Approve</button>
-                                        <button type="submit" name="action" value="Rejected" class="btn-action btn-reject">Reject</button>
-                                    </form>
-                                </c:if>
-                                <c:if test="${app.ceAppStatus != 'Pending'}">
-                                    <span style="color: #999; font-style: italic;">Processed</span>
-                                </c:if>
+                                <c:choose>
+                                    <%-- If Pending: Show Approve/Reject --%>
+                                    <c:when test="${app.ceAppStatus == 'Pending'}">
+                                        <form action="approvalController" method="POST" style="margin:0;">
+                                            <%-- Real database ID is hidden here for processing --%>
+                                            <input type="hidden" name="appID" value="${app.ceAppID}">
+                                            <button type="submit" name="action" value="Approved" class="btn-action btn-approve">
+                                                <i class="fas fa-check"></i> Approve
+                                            </button>
+                                            <button type="submit" name="action" value="Rejected" class="btn-action btn-reject">
+                                                <i class="fas fa-times"></i> Reject
+                                            </button>
+                                        </form>
+                                    </c:when>
+
+                                    <%-- If Rejected: Show Delete --%>
+                                    <c:when test="${app.ceAppStatus == 'Rejected'}">
+                                        <form action="DeleteApplicationServlet" method="POST" style="margin:0;" 
+                                              onsubmit="return confirm('Permanently delete this application?');">
+                                            <input type="hidden" name="eventId" value="${app.ceAppID}">
+                                            <button type="submit" class="btn-action btn-delete">
+                                                <i class="fas fa-trash-alt"></i> Delete
+                                            </button>
+                                        </form>
+                                    </c:when>
+
+                                    <%-- If Approved: Show Processed --%>
+                                    <c:otherwise>
+                                        <span style="color: #999; font-style: italic;">Processed</span>
+                                    </c:otherwise>
+                                </c:choose>
                             </td>
                         </tr>
                     </c:forEach>
+                    
+                    <%-- Show message if list is empty --%>
+                    <c:if test="${empty applicationList}">
+                        <tr>
+                            <td colspan="4" style="text-align: center; color: #999; padding: 30px;">
+                                No event applications found.
+                            </td>
+                        </tr>
+                    </c:if>
                 </tbody>
             </table>
         </div>

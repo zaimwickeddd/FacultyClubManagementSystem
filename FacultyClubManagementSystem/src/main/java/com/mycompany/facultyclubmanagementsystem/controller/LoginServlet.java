@@ -49,7 +49,7 @@ public class LoginServlet extends HttpServlet {
                 session.setAttribute("userName", user.getUserName());
                 session.setAttribute("userEmail", user.getUserEmail());
                 session.setAttribute("userRole", user.getUserRole());
-                System.out.println("LOGIN DEBUG clubId = " + user.getClubId());
+                //System.out.println("LOGIN DEBUG clubId = " + user.getClubId());
                 session.setAttribute("clubId", user.getClubId());
                 session.setAttribute("facultyId", user.getFacultyId());
                 session.setAttribute("userPhone", user.getUserPhone());
