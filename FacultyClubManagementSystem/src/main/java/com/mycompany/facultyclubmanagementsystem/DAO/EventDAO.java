@@ -492,7 +492,29 @@ public class EventDAO {
         }
         return events;
     }
-      public boolean deleteApplication(int appID) {
+    
+ 
+    public int countApprovedByFaculty(int facultyId) {
+        String sql = "SELECT COUNT(*) FROM clubeventapplication cea JOIN club c ON cea.ClubID = c.ClubID WHERE cea.CEAppStatus = 'Approved' AND c.FacultyID = ?";
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, facultyId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt(1);
+        } catch (Exception e) { e.printStackTrace(); }
+        return 0;
+    }
+
+    public int countRejectedByFaculty(int facultyId) {
+        String sql = "SELECT COUNT(*) FROM clubeventapplication cea JOIN club c ON cea.ClubID = c.ClubID WHERE cea.CEAppStatus = 'Rejected' AND c.FacultyID = ?";
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, facultyId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt(1);
+        } catch (Exception e) { e.printStackTrace(); }
+        return 0;
+    }
+    
+          public boolean deleteApplication(int appID) {
         String query = "DELETE FROM events WHERE ceAppID = ?"; // Ensure table/column names match your DB
         try (Connection conn = DBConnection.getConnection(); 
              PreparedStatement ps = conn.prepareStatement(query)) {

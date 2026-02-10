@@ -92,7 +92,7 @@
         <a href="eventListController" class="nav-item">
             <i class="fas fa-calendar-alt"></i> Events
         </a>
-        <a href="clubPage.jsp" class="nav-item">
+        <a href="approvalController" class="nav-item">
             <i class="fas fa-star"></i> Clubs
         </a>
         

@@ -1,7 +1,7 @@
 <%-- 
     Document   : login
-    Created on : 16 Jan 2026, 1:53:48 pm
-    Author     : Muhamad Zulhairie
+    Modified on : 10 Feb 2026
+    Author      : Muhamad Zulhairie / Gemini
 --%>
 
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
@@ -12,7 +12,6 @@
     <title>Login | UiTM Club</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* Matches your Dashboard background variables */
         :root {
             --bg-pink: #fbc2eb; 
             --card-purple: #e0b0ff; 
@@ -20,7 +19,6 @@
 
         body { 
             font-family: 'Segoe UI', sans-serif; 
-            /* Applied the gradient background */
             background: linear-gradient(135deg, var(--bg-pink) 0%, var(--card-purple) 100%);
             display: flex; 
             height: 100vh; 
@@ -32,7 +30,7 @@
         .card { 
             background: white; 
             padding: 40px; 
-            border-radius: 20px; /* Slightly more rounded to match dashboard */
+            border-radius: 20px; 
             box-shadow: 0 10px 25px rgba(0,0,0,0.15); 
             width: 100%; 
             max-width: 400px; 
@@ -48,16 +46,40 @@
         
         .input-group { position: relative; margin-bottom: 20px; text-align: left; }
         .input-group i.icon { position: absolute; left: 15px; top: 12px; color: #888; }
-        .input-group i.toggle { position: absolute; right: 15px; top: 12px; cursor: pointer; color: #888; }
         
-        input { width: 100%; padding: 10px 15px 10px 40px; border: 1px solid #ddd; border-radius: 12px; box-sizing: border-box; font-size: 16px; outline: none; transition: border 0.3s; }
+        /* THE FIX FOR THE EYE ICON */
+        .input-group i.toggle { 
+            position: absolute; 
+            right: 15px; 
+            top: 50%; 
+            transform: translateY(-50%); 
+            cursor: pointer; 
+            color: #888; 
+            z-index: 10;
+        }
+
+        /* HIDE THE BROWSER'S DEFAULT EYE */
+        input::-ms-reveal,
+        input::-ms-clear {
+            display: none;
+        }
+        
+        input { 
+            width: 100%; 
+            padding: 12px 15px 12px 40px; 
+            border: 1px solid #ddd; 
+            border-radius: 12px; 
+            box-sizing: border-box; 
+            font-size: 16px; 
+            outline: none; 
+            transition: border 0.3s; 
+        }
         input:focus { border-color: #9c42f5; }
-        input[type="password"] { padding-right: 40px; } 
+        input[type="password"] { padding-right: 45px; } 
         
         button { 
             width: 100%; 
             padding: 12px; 
-            /* Updated button to match dashboard accent color logic */
             background: linear-gradient(135deg, #9c42f5 0%, #ff99f1 100%); 
             color: white; 
             border: none; 
@@ -79,7 +101,6 @@
         <img src="image/UiTM-Logo-removebg-preview.png" alt="Logo" class="logo">
         <h2>Welcome Back</h2>
 
-        <%-- Alerts --%>
         <% String err = request.getParameter("error");
            if ("success".equals(request.getParameter("logout"))) { %>
             <div class="alert success">Logged out successfully.</div>
@@ -102,7 +123,7 @@
                 <i class="fas fa-lock icon"></i>
                 <input type="password" id="pass" name="password" placeholder="Password" required>
                 <i class="fas fa-eye toggle" onclick="togglePass()"></i>
-            </div>
+            </div>  
 
             <div style="text-align: right; margin-bottom: 15px;">
                 <a href="#" onclick="alert('Contact admin.');">Forgot Password?</a>
@@ -122,12 +143,10 @@
             var icon = document.querySelector(".toggle");
             if (input.type === "password") {
                 input.type = "text";
-                icon.classList.remove("fa-eye");
-                icon.classList.add("fa-eye-slash");
+                icon.classList.replace("fa-eye", "fa-eye-slash");
             } else {
                 input.type = "password";
-                icon.classList.remove("fa-eye-slash");
-                icon.classList.add("fa-eye");
+                icon.classList.replace("fa-eye-slash", "fa-eye");
             }
         }
     </script>
